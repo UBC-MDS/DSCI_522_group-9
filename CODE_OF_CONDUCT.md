@@ -23,7 +23,8 @@ The contributors and maintainers of this project will be respectable towards any
 Any unacceptable behavior should be reported by email to one of the following email addresses:
 
 
-- <ritish01@student.ubc.ca>
+- <hshaun@student.ubc.ca>
 - <jenitjai@student.ubc.ca>
+- <ritish01@student.ubc.ca>
 
  The consequences will be determined based on the complaint. It may include removing, editing, or rejecting contributions or banning the contributor.
