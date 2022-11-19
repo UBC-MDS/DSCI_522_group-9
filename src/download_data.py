@@ -16,4 +16,3 @@ def main(opt):
 if __name__ == '__main__':
     arguments = docopt(__doc__)
     main(arguments)
-    
