@@ -10,9 +10,9 @@ import pandas as pd
 import os
 
 def main(opt):
-    data = pd.read_csv(opt["--url"])
-    os.path.join(opt["--file_path"] , "drug_consumption.csv")
-    data.to_csv(opt["--file_path"], index = False)
+    data = pd.read_csv(opt["--url"], header=None)
+    filepath = os.path.join(opt["--file_path"] , "drug_consumption.csv")
+    data.to_csv(filepath, index = False)
 
 if __name__ == '__main__':
     arguments = docopt(__doc__)
