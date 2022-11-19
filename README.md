@@ -17,9 +17,11 @@ The dataset for this project is created by Elaine Fehrman, Vincent Egan, Evgeny 
 
 ## Usage
 ***
-### Downloading Data
-In order to use run the anlysis, you can download the data using the script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/download_data/src/download_data.py)).
+## Downloading Data
+In order to use run the anlysis, you can download the data using the script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/download_data/src/download_data.py)). The dataset is located at the following URL: https://archive.ics.uci.edu/ml/machine-learning-databases/00373/drug_consumption.data. This data should be stored in the following file path `data/raw/`.
 
+## Preprossesing
+The raw data requires some cleaning and can be replicated using the following file located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/main/src/preprocess.ipynb)).  In order run this document, install the dependencies below.
 ## EDA
 ***
 The exploritory data analysis can be replicated using the following .ipnyb located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/EDA/src/drug_consumption_data_analysis.ipynb)). In order run this anlysis, install the dependencies below.
