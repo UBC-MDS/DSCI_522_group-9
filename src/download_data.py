@@ -1,4 +1,3 @@
-
 """This script downloads data given a URL and local file path.
 Usage: download_data.py --url=<url> --file_path=<file_path>
 Options:
