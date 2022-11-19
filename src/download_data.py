@@ -8,10 +8,12 @@ Options:
 
 from docopt import docopt
 import pandas as pd
+import os
 
 def main(opt):
     data = pd.read_csv(opt["--url"])
-    data.to_csv(opt["--file_path"] + "\drug_consumption.csv", index = False)
+    os.path.join(opt["--file_path"] , "drug_consumption.csv")
+    data.to_csv(opt["--file_path"], index = False)
 
 if __name__ == '__main__':
     arguments = docopt(__doc__)
