@@ -63,8 +63,8 @@ def main(data_path, result_path):
 
     # For testing -- should be in preprocessing file
     # drop_cols = ["Ethnicity", "Amphetamines", "Amyl", "Benzos",
-    #        "Crack", "Ecstacy", "Heroin", "Ketamine", "Legalh",
-    #        "LSD", "Meth", "Semer"]
+    #      "Crack", "Ecstacy", "Heroin", "Ketamine", "Legalh",
+    #       "LSD", "Meth", "Semer"]
 
     # Make column transformer
     preprocessor =  make_column_transformer(
@@ -119,7 +119,12 @@ def main(data_path, result_path):
     
     # Save results to result path
     results_path = os.path.join(result_path, "svc_dummy_score.csv")
-    score_by_drug.to_csv(results_path, index = None)
+    score_by_drug.to_csv(results_path, index = False)
+    try:
+        score_by_drug.to_csv(results_path, index = False)
+    except:
+        os.makedirs(os.path.dirname(results_path))
+        score_by_drug.to_csv(results_path, index = False)
     
     # Look at feature importances with decision tree
     tree_clf_pipe =  make_pipeline(
@@ -140,7 +145,11 @@ def main(data_path, result_path):
     
     # Save png to result path
     fi_path = os.path.join(result_path, "feature_importances.png")
-    dfi.export(feature_importance_drug, fi_path)
+    try:
+        dfi.export(feature_importance_drug, fi_path)
+    except:
+        os.makedirs(os.path.dirname(fi_path))
+        dfi.export(feature_importance_drug, fi_path)
     
     ## Evaluate on test set ---------------------------------------------
     test_scores = {}
@@ -154,7 +163,11 @@ def main(data_path, result_path):
     
     # Save results to result path
     test_results_path = os.path.join(result_path, "test_results.csv")
-    test_scores.to_csv(test_results_path, index = None)
+    try:
+        test_scores.to_csv(test_results_path, index = False)
+    except:
+        os.makedirs(os.path.dirname(test_results_path))
+        test_scores.to_csv(test_results_path, index = False)
     
 if __name__ == '__main__':
     opt = docopt(__doc__)
