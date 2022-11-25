@@ -63,8 +63,8 @@ def main(data_path, result_path):
 
     # For testing -- should be in preprocessing file
     # drop_cols = ["Ethnicity", "Amphetamines", "Amyl", "Benzos",
-    #      "Crack", "Ecstacy", "Heroin", "Ketamine", "Legalh",
-    #       "LSD", "Meth", "Semer"]
+    #     "Crack", "Ecstacy", "Heroin", "Ketamine", "Legalh",
+    #      "LSD", "Meth", "Semer"]
 
     # Make column transformer
     preprocessor =  make_column_transformer(
@@ -119,7 +119,6 @@ def main(data_path, result_path):
     
     # Save results to result path
     results_path = os.path.join(result_path, "svc_dummy_score.csv")
-    score_by_drug.to_csv(results_path, index = False)
     try:
         score_by_drug.to_csv(results_path, index = False)
     except:
