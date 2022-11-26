@@ -19,7 +19,7 @@ library(tidyverse)
 ```
 
 # Introduction
-With drug overdoses on the rise, especially in British Columbia [@general_2022], it is important that we understand what factors can influence someone into trying out drugs. Investigation of this problem could give us insight into what personality characteristics are the main motivators towrds certain drugs and apply those conclusions when making public health decisions. We wanted to look at behavioural data to see if this could allow us to predict someones level of consumption of both illegal and legal drugs. 
+With drug overdoses on the rise, especially in British Columbia [@general_2022], it is important that we understand what factors can influence someone into trying out drugs. Investigation of this problem could give us insight into what personality characteristics are the main motivators towards certain drugs and apply those conclusions when making public health decisions. We wanted to look at behavioural data to see if this could allow us to predict someones level of consumption of both illegal and legal drugs. 
 
 The objective of this project is to predict if the level of consumption of different drugs given their personality traits, NEO-FFI-R (neuroticism, extraversion, openness to experience, agreeableness, and conscientiousness), BIS-11 (impulsivity), and ImpSS (sensation seeking), and personal characteristics (level of education, age, gender, country of residence, ethnicity).
 
