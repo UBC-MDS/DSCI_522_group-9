@@ -12,15 +12,30 @@ Options:
 import os
 from docopt import docopt
 import pandas as pd
-from sklearn.compose import make_column_transformer
-from sklearn.preprocessing import StandardScaler, OrdinalEncoder, OneHotEncoder
 from sklearn.model_selection import train_test_split
 import json
 
 #The following JSON file contains all the mappings required for data-cleaning 
-mappings = json.load(open("src/data_mapping.json", "r"))
+mappings = json.load(open("data_mapping.json", "r"))
 
 def main(in_path, preprocessed_out_dir, processed_out_dir):
+    """
+    Processes raw data into preprocessed and cleans to processed data
+    Parameters
+    ----------
+    in_path : string
+        path from where data is read
+    preprocessed_out_dir: string
+        path to the directory where preprocessed data is stored
+    processed_out_dir: string
+        path to the directory where processed data is stored
+    Returns
+    -------
+    None
+    Example
+    --------
+    main("../data/raw/drug_consumption.data", "../data/preocessed", "../data/processed")
+    """
     # df = pd.read_table("../data/raw/drug_consumption.data", index_col=0, names=column_names, delimiter=',')
     df = pd.read_table(in_path, index_col=0, names=mappings["column_headers"], delimiter=',')
 
@@ -32,37 +47,39 @@ def main(in_path, preprocessed_out_dir, processed_out_dir):
 
     # df.to_csv("../data/preprocessed/drug_consumption.csv", index=False)
     train_df, test_df = train_test_split(df, train_size=0.8, shuffle=False, random_state=522)
-    
-    train_df.to_csv(os.path.join(preprocessed_out_dir, "train.csv"), index=False)
-    test_df.to_csv(os.path.join(preprocessed_out_dir, "test.csv"), index=False)
-    
-    #Perform col transformation
-    preprocessor =  make_column_transformer(
-                        (StandardScaler(), mappings['numerical']),
-                        (OrdinalEncoder(categories = [
-                            list(mappings['categories']['Age'].values()),
-                            list(mappings['categories']['Education'].values()),
-                            list(mappings['categories']['Impulsiveness'].values()),
-                            list(mappings['categories']['SensationSeeking'].values()),
-                        ]), mappings['ordinal']),
-                        (OneHotEncoder(drop='if_binary', dtype=int, handle_unknown='ignore'), mappings['categorical']),
-                        ("drop", mappings['drop'])
-                    )
 
-    preprocessor.fit(train_df)
+    try:
+        train_df.to_csv(os.path.join(preprocessed_out_dir, "train.csv"), index=False)
+    except:
+        os.makedirs(os.path.dirname(preprocessed_out_dir))
+        train_df.to_csv(os.path.join(preprocessed_out_dir, "train.csv"), index=False)
+
+    try:
+        test_df.to_csv(os.path.join(preprocessed_out_dir, "test.csv"), index=False)
+    except:
+        os.makedirs(os.path.dirname(preprocessed_out_dir))
+        test_df.to_csv(os.path.join(preprocessed_out_dir, "test.csv"), index=False)
     
-    X_train_enc = pd.DataFrame(preprocessor.transform(train_df),
-                               columns=preprocessor.get_feature_names_out())
-    X_test_enc = pd.DataFrame(preprocessor.transform(test_df),
-                               columns=preprocessor.get_feature_names_out())
-    y_train = train_df[mappings['drugs']]
-    y_test = test_df[mappings['drugs']]
-    
-    train_transformed = pd.concat([X_train_enc, y_train], axis=1)
-    test_transformed = pd.concat([X_test_enc, y_test], axis=1)
-    
-    train_transformed.to_csv(os.path.join(processed_out_dir, "train.csv"), index=False)
-    test_transformed.to_csv(os.path.join(processed_out_dir, "test.csv"), index=False)
+    # Drop drugs columns that will not be used for analysis
+    train_df = train_df.drop(columns = mappings["drop"])
+    test_df = test_df.drop(columns = mappings["drop"])
+
+    # Clean up strings in categorical and ordinal columns
+    for col_name in mappings["categorical"] + mappings["ordinal"]:
+        train_df[col_name] = train_df[col_name].str.strip()
+        test_df[col_name] = test_df[col_name].str.strip()
+
+    try:
+        train_df.to_csv(os.path.join(processed_out_dir, "train.csv"), index=False)
+    except:
+        os.makedirs(os.path.dirname(processed_out_dir))
+        train_df.to_csv(os.path.join(processed_out_dir, "train.csv"), index=False)
+
+    try:
+        test_df.to_csv(os.path.join(processed_out_dir, "test.csv"), index=False)
+    except:
+        os.makedirs(os.path.dirname(processed_out_dir))
+        test_df.to_csv(os.path.join(processed_out_dir, "test.csv"), index=False)
 
 if __name__ == "__main__":
     opt = docopt(__doc__)
