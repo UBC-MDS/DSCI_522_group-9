@@ -23,7 +23,7 @@ library(caret)
 
 # Introduction
 
-The objective of this project is to predict if a person will have never used a drug, used it a decade ago, used it in the last decade, used it in the last year, used it in the last month, used it in the last week, and used it in the last day regarding a selection of drugs given their personality measurements, NEO-FFI-R (neuroticism, extraversion, openness to experience, agreeableness, and conscientiousness), BIS-11 (impulsivity), and ImpSS (sensation seeking), and personal characteristics (level of education, age, gender, country of residence, ethnicity).
+The objective of this project is to predict if the level of consumption of different drugs given their personality traits, NEO-FFI-R (neuroticism, extraversion, openness to experience, agreeableness, and conscientiousness), BIS-11 (impulsivity), and ImpSS (sensation seeking), and personal characteristics (level of education, age, gender, country of residence, ethnicity).
 
 # Methodology
 
@@ -34,15 +34,43 @@ The data that we used in the project is from a database that was collected by El
 The data set
 
 ## Exploratory Data Analyisis
-The first step in our analysis was to explore the data that was provided. The first step was to investigate the frequency of drug consumption for the drugs that we chose for our analysis. 
+
+The first step in our analysis was to explore the data that was provided. The first step was to investigate the frequency of drug consumption for the drugs that we chose for our analysis.
 
 ![Frequency of drug consumption for different drugs](../results/eda/drug_frequency.png)
+
 The above plot shows the frequency of usage of different kinds of drugs. On the X-axis, we plot the frequency of drug consumption in an increasing order (Never Used to Used in the last day). It is interesting to note the trends for different drugs as we can see that:
 
-- For legal drugs like `Caffeine`, `Chocolate`, and `Alcohol`, More people have used it recently than many years ago.
-- For drugs like `Mushrooms`, which are legal in a few countries included in the dataset and have medical uses, we see a higher number of people who have used it sometime in the last year/decade.
-- For drugs like `Cannabis` and `Nicotine`, which are often consumed together and are also legal in a few countries included in the `dataset`, have a very similar trend line.
-- For highly illegal substances, that have no medical use, like Cocaine and VSA, we see that a large proportion of the participants have either never consumed it or consumed it very long ago.
+-   For legal drugs like `Caffeine`, `Chocolate`, and `Alcohol`, More people have used it recently than many years ago.
+-   For drugs like `Mushrooms`, which are legal in a few countries included in the dataset and have medical uses, we see a higher number of people who have used it sometime in the last year/decade.
+-   For drugs like `Cannabis` and `Nicotine`, which are often consumed together and are also legal in a few countries included in the `dataset`, have a very similar trend line.
+-   For highly illegal substances, that have no medical use, like Cocaine and VSA, we see that a large proportion of the participants have either never consumed it or consumed it very long ago.
+
+Examining the the categorical variables, we see that most of the respondants are younger, with the largest age range being 18-24.
+
+```{r age valuecount table}
+age_count <- read_csv("../results/eda/Age_valuecount.csv")
+knitr::kable(age_count, caption = 'Table 1. Count of Responses by Age') |>
+ kableExtra::kable_styling(full_width = FALSE)
+```
+
+In addition, the majority of respondents have some kind of post-secondary education, with the largest proportion being `Some college or university, no certificate or degree`.
+
+```{r education valuecount table}
+education_count <- read_csv("../results/eda/Education_valuecount.csv")
+knitr::kable(education_count, caption = 'Table 1. Count of Responses by Education Level') |>
+ kableExtra::kable_styling(full_width = FALSE)
+```
+
+![Spread of socres obatined from the NEO-FFI-R test](../results/eda/personality_chart.png)
+
+The above plot shows the distribution of the NEO-FFI-R scores for all the participants involved in this experiment. We can notice that a few points are not included in the whiskers of the boxplot for some of the traits which can be explained by the small sample size. A lower score does not imply incorrect information or an outliers because it is not unusual for a person to have a very low/high score as the NEO-FFI-R test is very subjective to the person.
+
+We can see the means of all the traits lie in the Moderate range except for the Openness trait. One reason for this could be that if a person is participating in an experiment which includes the collection of highly personal data, they are probably very open-minded people and have a high level of openness to trying new things.
+
+Finally, looking into the ordinal columns impulsiveness and sensation seeking, we can see from plotting the histograms that the data points are clusted around the midpoint values as compared to the extreme values (high or low).
+
+![Ordinal Personality Traits ](../results/eda/numerical_bars.png)
 
 ## Analysis
 
