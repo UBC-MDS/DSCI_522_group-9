@@ -83,12 +83,12 @@ For the analysis, we used Python programming language [@Python] and for the repo
 
 The results of the feature importance show that NEO-FFI-R personality scores were more important to the model than features like Gender, Age, Education or Country.
 
-![Table 3. Decision Tree Feature Imporatnce](../results/feature_importances.png)
+![Table 3. Decision Tree Feature Imporatnce](../results/analysis/feature_importances.png)
 
 The results of our model were not as promising as expected, many of the drug predictions do not perform any better than the `DummyClassifier`. The only predictions that performed better than the `DummyClassifier` were for Cannabis or Nicotine.
 
 ```{r}
-test_scores <- read_csv("../results/svc_dummy_Score.csv")
+test_scores <- read_csv("../results/analysis/svc_dummy_Score.csv")
 knitr::kable(test_scores, caption = 'Table 4. Count of Responses by Education Level') |>
  kableExtra::kable_styling(full_width = FALSE)
 ```
