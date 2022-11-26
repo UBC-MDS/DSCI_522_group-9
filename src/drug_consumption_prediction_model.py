@@ -1,4 +1,4 @@
-# Ritish Sharma
+# author: Jenit Jain, Shaun Hutchinson, Ritisha Sharma
 # 2021-11-26
 
 """This script takes in training and testing set of drug consumption data set, 
@@ -144,7 +144,7 @@ def main(data_path, result_path):
     score_by_drug["dummy_score"] = dummy_cv_results["test_score"]
     
     # Save results to result path
-    results_path = os.path.join(result_path, "svc_dummy_score.csv")
+    results_path = os.path.join(result_path, "analysis/svc_dummy_score.csv")
     try:
         score_by_drug.to_csv(results_path, index = False)
     except:
@@ -169,7 +169,7 @@ def main(data_path, result_path):
     feature_importance_drug = feature_importance_drug.set_index("feature").style.background_gradient(cmap = "BuPu")
     
     # Save png to result path
-    fi_path = os.path.join(result_path, "feature_importances.png")
+    fi_path = os.path.join(result_path, "analysis/feature_importances.png")
     try:
         dfi.export(feature_importance_drug, fi_path)
     except:
@@ -187,7 +187,7 @@ def main(data_path, result_path):
     test_scores = test_scores.rename(columns = {"index": "target_drug", 0: "svc_score"})
     
     # Save results to result path
-    test_results_path = os.path.join(result_path, "test_results.csv")
+    test_results_path = os.path.join(result_path, "analysis/test_results.csv")
     try:
         test_scores.to_csv(test_results_path, index = False)
     except:
