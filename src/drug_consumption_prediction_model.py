@@ -15,13 +15,31 @@ from sklearn.compose import make_column_transformer
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder, OneHotEncoder
 from sklearn.model_selection import RandomizedSearchCV
-from sklearn.model_selection import cross_val_score, cross_val_predict, cross_validate
+from sklearn.model_selection import cross_validate
 
 from sklearn.dummy import DummyClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
 def main(data_path, result_path):
+    """
+    Fits training data to SVC model and optimizes hyperparameters and evaluates on the testing set
+
+    Parameters
+    ----------
+    data_path : string
+        path from where data is read
+    result_path: string
+        path to which results are stored
+
+    Returns
+    -------
+    None
+
+    Example
+    --------
+    main("../data/processed/", "../results")
+    """
     # Get data from the given path
     train_path = os.path.join(data_path, "train.csv")
     test_path = os.path.join(data_path, "test.csv")
@@ -76,6 +94,7 @@ def main(data_path, result_path):
         remainder = "passthrough"
     )
     
+    ## Get baseline scores ---------------------------------------------
     # DummyClassifier
     dc = DummyClassifier()
 
@@ -100,6 +119,7 @@ def main(data_path, result_path):
             "svc__gamma": 10.0 ** np.arange(-4, 4),
              "svc__C": 10.0 ** np.arange(-4, 4)}
 
+    ## Fit SVC model ---------------------------------------------
     # Save the best model and score for each drug
     svc_best_estimator = {}
     svc_best_score_by_drug = {}
