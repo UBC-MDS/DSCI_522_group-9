@@ -19,7 +19,7 @@ library(tidyverse)
 ```
 
 # Introduction
-With drug overdoses on the rise, especially in British Columbia [@general_2022], it is important that we understand what factors can influence someone into trying out drugs. We wanted to look at behavioural data to see if this could allow us to predict someones level of consumption of both illegal and legal drugs.
+With drug overdoses on the rise, especially in British Columbia [@general_2022], it is important that we understand what factors can influence someone into trying out drugs. Investigation of this problem could give us insight into what personality characteristics are the main motivators towrds certain drugs and apply those conclusions when making public health decisions. We wanted to look at behavioural data to see if this could allow us to predict someones level of consumption of both illegal and legal drugs. 
 
 The objective of this project is to predict if the level of consumption of different drugs given their personality traits, NEO-FFI-R (neuroticism, extraversion, openness to experience, agreeableness, and conscientiousness), BIS-11 (impulsivity), and ImpSS (sensation seeking), and personal characteristics (level of education, age, gender, country of residence, ethnicity).
 
@@ -93,8 +93,8 @@ knitr::kable(test_scores, caption = 'Table 4. Count of Responses by Education Le
  kableExtra::kable_styling(full_width = FALSE)
 ```
 
-Some limitations of this analysis is that we assumed that we did not take into account whether consumption of one drug had an impact on consumption of other drugs. In reality, these targets could have correlation. Additionally, for some drugs, we had small limited classes for certain drugs where the participants had consumed at a target level. This may have made it harder to tune our hyperparameters effectively. Ideally, we would have a larger sample with more participants at every level of consumption. In addition, many of of the respondents had a some post-secondary education, this may not accurately represent the population.
+Some limitations of this analysis is that we assumed that we did not take into account whether consumption of one drug had an impact on consumption of other drugs. In reality, these targets could have correlation. Additionally, for some drugs, we had small limited classes for certain drugs where the participants had consumed at a target level. This may have made it harder to tune our hyperparameters effectively. Ideally, we would have a larger sample with more participants at every level of consumption. In addition, many of of the respondents had a some post-secondary education, this may not accurately represent the population. Additionally, the classes were unbalanced within the target columns for each drug. Since the dataset is relatively small, it was difficult to find a strategy to cope for the imbalance. 
 
-To improve this model, we would like to transform this problem from a classification problem to a regression problem. We believe that this could lead to better results.We could also look to try out different models to see if there are better models for this problem if we kept it a classification problem. However, based on our current results, we would not recommend for this model to be deployed at the current accuracy level.
+To improve this model, we would like to transform this problem from a classification problem to a regression problem. We believe that this could lead to better results.We could also look to try out different models to see if there are better models for this problem if we kept it a classification problem. However, based on our current results, we would not recommend for this model to be deployed at the current accuracy level. With more data and improvements to the model, the problem could be expanded to include the drug target columns that were excluded. 
 
 # References
