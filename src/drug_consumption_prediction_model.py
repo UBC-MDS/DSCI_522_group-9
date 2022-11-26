@@ -108,6 +108,7 @@ def main(data_path, result_path):
         dummy_cv_results[drug] = pd.DataFrame(cross_validate(dc, X_train, y_train[drug], cv = 5,
                                                 return_train_score = True)).mean().round(4)
     
+    # Save results in a DataFrame
     dummy_cv_results = pd.DataFrame(dummy_cv_results)
     dummy_cv_results = dummy_cv_results.drop(index = ["fit_time", "score_time"]).T
     dummy_cv_results = dummy_cv_results.reset_index()
@@ -136,6 +137,7 @@ def main(data_path, result_path):
         svc_best_estimator[drug] = random_search.best_estimator_
         svc_best_score_by_drug[drug] = [round(random_search.best_score_, 4)]
         
+    # Save best scores to dataframe
     score_by_drug = pd.DataFrame(svc_best_score_by_drug).T
     score_by_drug = score_by_drug.reset_index()
     score_by_drug = score_by_drug.rename(columns = {"index": "target_drug", 0: "svc_score"})
