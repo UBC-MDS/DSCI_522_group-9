@@ -52,8 +52,8 @@ def main(data_path, result_path):
     test_df = pd.read_csv(test_path)
 
     # For testing -- should be in preprocessing file
-    train_df["Education"] = train_df["Education"].str.strip()
-    test_df["Education"] = test_df["Education"].str.strip()
+    # train_df["Education"] = train_df["Education"].str.strip()
+    # test_df["Education"] = test_df["Education"].str.strip()
 
     # Separate out target columns
     drug_columns = ['Chocolate', 'Caffeine',  'Nicotine', 'Alcohol', 
@@ -84,9 +84,9 @@ def main(data_path, result_path):
     sensation_seeking_order = ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11"]
 
     # For testing -- should be in preprocessing file
-    drop_cols = ["Ethnicity", "Amphetamines", "Amyl", "Benzos",
-        "Crack", "Ecstacy", "Heroin", "Ketamine", "Legalh",
-         "LSD", "Meth", "Semer"]
+    # drop_cols = ["Ethnicity", "Amphetamines", "Amyl", "Benzos",
+    #     "Crack", "Ecstacy", "Heroin", "Ketamine", "Legalh",
+    #      "LSD", "Meth", "Semer"]
 
     # Make column transformer
     preprocessor =  make_column_transformer(
@@ -94,7 +94,7 @@ def main(data_path, result_path):
         (OrdinalEncoder(categories = [age_order, education_order, 
                                   impulsiveness_order, sensation_seeking_order]), ordinal_cols),
         (OneHotEncoder(drop='if_binary', dtype=int, handle_unknown='ignore'), categorical_cols),
-        ("drop", drop_cols),
+        # ("drop", drop_cols),
         remainder = "passthrough"
     )
     
