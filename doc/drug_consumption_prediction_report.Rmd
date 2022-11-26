@@ -16,7 +16,6 @@ knitr::opts_chunk$set(echo = FALSE)
 library(knitr)
 library(kableExtra)
 library(tidyverse)
-library(caret)
 ```
 
 # Summary
@@ -29,7 +28,7 @@ The objective of this project is to predict if the level of consumption of diffe
 
 ## Data
 
-The data that we used in the project is from a database that was collected by Elaine Fehrman between March 2011 and March 2012. This information was gathered through an online survey tool from Survey Gizmo was employed to gather data with maximum anonymity, this being particularly relevant to canvassing respondents' views, given the sensitive nature of drug use. All participants were required to declare themselves at least 18 years of age prior to informed consent being given. Each row of the data set is the corresponds to the individual's responses. For our analysis, we have chosen to not include Ethnicity for ethical reasons.
+The data that we used in the project is from a database that was collected by Elaine Fehrman between March 2011 and March 2012. This information was gathered through an online survey tool from Survey Gizmo was employed to gather data with maximum anonymity, this being particularly relevant to canvassing respondents' views, given the sensitive nature of drug use. All participants were required to declare themselves at least 18 years of age prior to informed consent being given. Each row of the data set is the corresponds to the individual's responses. For our analysis, we have chosen to not include Ethnicity for ethical reasons. [@drug_consumption_quantified_373]
 
 The data set
 
@@ -58,7 +57,7 @@ In addition, the majority of respondents have some kind of post-secondary educat
 
 ```{r education valuecount table}
 education_count <- read_csv("../results/eda/Education_valuecount.csv")
-knitr::kable(education_count, caption = 'Table 1. Count of Responses by Education Level') |>
+knitr::kable(education_count, caption = 'Table 2. Count of Responses by Education Level') |>
  kableExtra::kable_styling(full_width = FALSE)
 ```
 
@@ -70,11 +69,27 @@ We can see the means of all the traits lie in the Moderate range except for the 
 
 Finally, looking into the ordinal columns impulsiveness and sensation seeking, we can see from plotting the histograms that the data points are clusted around the midpoint values as compared to the extreme values (high or low).
 
-![Ordinal Personality Traits ](../results/eda/numerical_bars.png)
+![Ordinal Personality Traits](../results/eda/numerical_bars.png)
 
 ## Analysis
 
-To build this model, we used the SVM RBF algorithm to predict whether a person will have never used a drug, used it a decade ago, used it in the last decade, used it in the last year, used it in the last month, used it in the last week, and used it in the last day regarding a selection of drugs given their personality measurements.
-The categorical variables from the original data, were transformed using `OrdinalEncoder` if there was a natural order to the values and `OneHotEncoder` otherwise. The numerical features were scaled using `StandardScaler` since feature standardization is critical with the models used in the analysis.  
-The baseline scores were found using the `DummyClassifier`. For the final model, we used `RandomizedSearchCV` with 5 folds to tune the hyperparameters $\gamma$, $C$ and class weight. Additionally, we used a `DecisionTree` to find the feature importances for each drug.
-For the analysis, we used Python programming language (Van Rossum and Drake 2009) and following packages: Pandas (McKinney 2010). The code used to perform the analysis and create this report can be found here: https://github.com/ttimbers/breast_cancer_predictor
+To build this model, we used the SVM RBF algorithm to predict whether the level of drug consumption (have never used a drug, used it a decade ago, used it in the last decade, used it in the last year, used it in the last month, used it in the last week, and used it in the last day) regarding a selection of drugs given their personality measurements. The categorical variables from the original data, were transformed using `OrdinalEncoder` if there was a natural order to the values and `OneHotEncoder` otherwise. The numerical features were scaled using `StandardScaler` since feature standardization is critical with the models used in the analysis.\
+The baseline scores were found using the `DummyClassifier`. For the final model, we used `RandomizedSearchCV` with 5 folds to tune the hyperparameters $\gamma$, $C$ and class weight. Additionally, we used a `DecisionTree` to find the feature importances for each drug. For the analysis, we used Python programming language (Van Rossum and Drake 2009) and following packages: Pandas (McKinney 2010). The code used to perform the analysis and create this report can be found here: <https://github.com/ttimbers/breast_cancer_predictor>.
+
+The results of the feature importance show that NEO-FFI-R personality scores were more important to the model than features like Gender, Age, Education or Country.
+
+![Table 3. Decision Tree Feature Imporatnce](../results/feature_importances.png)
+
+The results of our model were not as promising as expected, many of the drug predictions do not perform any better than the `DummyClassifier`. The only predictions that performed better than the `DummyClassifier` were for Cannabis or Nicotine.
+
+```{r}
+test_scores <- read_csv("../results/svc_dummy_Score.csv")
+knitr::kable(test_scores, caption = 'Table 4. Count of Responses by Education Level') |>
+ kableExtra::kable_styling(full_width = FALSE)
+```
+
+Some limitations of this analysis is that we assumed that we did not take into account whether consumption of one drug had an impact on consumption of other drugs. In reality, these targets could have correlation. Additionally, for some drugs, we had small limited classes for certain drugs where the participants had consumed at a target level. This may have made it harder to tune our hyperparameters effectivley. Ideally, we would have a larger sample with more participants at every level of consumption.
+
+To improve this model, we would like to transform this problem from a classification problem to a regression problem. We believe that this could lead to better results.We could also look to try out different models to see if there are better models for this problem if we kept it a classification problem. However, based on our current results, we would not recommend for this model to be deployed at the current accuracy level.
+
+# References
