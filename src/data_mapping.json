@@ -46,11 +46,11 @@
         "SensationSeeking"
     ],
     "categorical":[
-        "Gender",
-        "Country"
+        "Gender"
     ],
     "drop":[
         "Ethnicity",
+        "Country",
         "Amphetamines",
         "Amyl",
         "Benzos",
