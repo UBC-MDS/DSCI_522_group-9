@@ -1,0 +1,49 @@
+---
+title: "Predicting drug consumption from personality measurements "
+author: "Ritisha Sharma, Jenit Jain, Shaun Hutchinson"
+date: "2019/12/30 (updated: `r Sys.Date()`)"
+always_allow_html: true
+output: 
+  html_document:
+    toc: true
+  github_document:
+    toc: true
+bibliography: drug_prediction_refs.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(knitr)
+library(kableExtra)
+library(tidyverse)
+library(caret)
+```
+
+# Summary
+
+# Introduction
+
+The objective of this project is to predict if a person will have never used a drug, used it a decade ago, used it in the last decade, used it in the last year, used it in the last month, used it in the last week, and used it in the last day regarding a selection of drugs given their personality measurements, NEO-FFI-R (neuroticism, extraversion, openness to experience, agreeableness, and conscientiousness), BIS-11 (impulsivity), and ImpSS (sensation seeking), and personal characteristics (level of education, age, gender, country of residence, ethnicity).
+
+# Methodology
+
+## Data
+
+The data that we used in the project is from a database that was collected by Elaine Fehrman between March 2011 and March 2012. This information was gathered through an online survey tool from Survey Gizmo was employed to gather data with maximum anonymity, this being particularly relevant to canvassing respondents' views, given the sensitive nature of drug use. All participants were required to declare themselves at least 18 years of age prior to informed consent being given. Each row of the data set is the corresponds to the individual's responses. For our analysis, we have chosen to not include Ethnicity for ethical reasons.
+
+The data set
+
+## Exploratory Data Analyisis
+The first step in our analysis was to explore the data that was provided. The first step was to investigate the frequency of drug consumption for the drugs that we chose for our analysis. 
+
+![Frequency of drug consumption for different drugs](../results/eda/drug_frequency.png)
+The above plot shows the frequency of usage of different kinds of drugs. On the X-axis, we plot the frequency of drug consumption in an increasing order (Never Used to Used in the last day). It is interesting to note the trends for different drugs as we can see that:
+
+- For legal drugs like `Caffeine`, `Chocolate`, and `Alcohol`, More people have used it recently than many years ago.
+- For drugs like `Mushrooms`, which are legal in a few countries included in the dataset and have medical uses, we see a higher number of people who have used it sometime in the last year/decade.
+- For drugs like `Cannabis` and `Nicotine`, which are often consumed together and are also legal in a few countries included in the `dataset`, have a very similar trend line.
+- For highly illegal substances, that have no medical use, like Cocaine and VSA, we see that a large proportion of the participants have either never consumed it or consumed it very long ago.
+
+## Analysis
+
+To build this model, we used the SVM RBF algorithm to predict whether a person will have never used a drug, used it a decade ago, used it in the last decade, used it in the last year, used it in the last month, used it in the last week, and used it in the last day regarding a selection of drugs given their personality measurements
