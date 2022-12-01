@@ -26,5 +26,6 @@ doc/drug_consumption_prediction_report.html: doc/drug_consumption_prediction_rep
 
 clean: 
 	rm -rf data
-	rm -rf results
+	rm -rf results/eda/*
+	rm -rf results/analysis/*
 	rm -rf doc/drug_consumption_prediction_report.html
