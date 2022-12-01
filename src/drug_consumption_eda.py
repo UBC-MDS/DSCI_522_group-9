@@ -13,7 +13,9 @@ from sklearn.model_selection import train_test_split
 from docopt import docopt
 import pandas as pd
 import os
+import warnings
 
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def main(train, out_dir):
     train_df = pd.read_csv(train)
