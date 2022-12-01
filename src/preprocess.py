@@ -16,7 +16,7 @@ from sklearn.model_selection import train_test_split
 import json
 
 #The following JSON file contains all the mappings required for data-cleaning 
-mappings = json.load(open("data_mapping.json", "r"))
+mappings = json.load(open("src/data_mapping.json", "r"))
 
 def main(in_path, preprocessed_out_dir, processed_out_dir):
     """
