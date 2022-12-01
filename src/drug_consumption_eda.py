@@ -22,6 +22,11 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def main(train, out_dir):
     train_df = pd.read_csv(train)
+    
+    # Making the output folder if it does not exist
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+    
     # Making frequency of drug consumption chart
     
     feature_columns = [ 'Age', 'Gender', 'Education', 'Country', 'Ethnicity', 'Neuroticism',
