@@ -2,6 +2,9 @@
 Saves the plots as png files and the tables as csv files.
 
 Usage: src/drug_consumption_eda.py --train=<train> --out_dir=<out_dir>
+
+Example: python src/drug_consumption_eda.py --train=data/preprocessed/train.csv --out_dir=results/eda
+
 Options:
 --train=<train>     Path (including filename) to training data (which needs to be saved as a CSV)
 --out_dir=<out_dir> Path to directory where the plots should be saved
