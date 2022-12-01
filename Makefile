@@ -2,7 +2,8 @@
 # author: Shaun Hutchinson, Jenit Jain, Ritisha Sharma
 # date: 2022-11-29
 
-all: results/eda/drug_frequency.png results/eda/personality_chart.png results/eda/numerical_bars.png results/eda/Age_valuecount.png results/eda/Gender_valuecount.png results/eda/Education_valuecount.png results/eda/Country_valuecount.png results/eda/Ethnicity_valuecount.png doc/breast_cancer_predict_report.md results/feature_importances.png results/svc_dummy_score.csv results/test_results.csv doc/drug_consumption_prediction_report.Rmd
+all: results/analysis/feature_importances.png results/analysis/svc_dummy_score.csv results/analysis/test_results.csv doc/drug_consumption_prediction_report.Rmd
+#all: results/eda/drug_frequency.png results/eda/personality_chart.png results/eda/numerical_bars.png results/eda/Age_valuecount.png results/eda/Gender_valuecount.png results/eda/Education_valuecount.png results/eda/Country_valuecount.png results/eda/Ethnicity_valuecount.png  results/feature_importances.png results/svc_dummy_score.csv results/test_results.csv doc/drug_consumption_prediction_report.Rmd
 
 # download and save data from url
 data/raw/drug_consumption.csv: src/download_data.py
@@ -10,14 +11,14 @@ data/raw/drug_consumption.csv: src/download_data.py
 
 # preprocess data (split data and clean strings)
 data/preprocessed/train.csv data/preprocessed/test.csv data/processed/train.csv data/processed/test.csv: src/preprocess.py data/raw/drug_consumption.csv
-	python src/preprocess.py --input_file_path=data/raw/drug_consumption.csv --preprocessed_out_dir=data/prerocessed --processed_out_dir=data/processed 
+	python src/preprocess.py --input_file_path=data/raw/drug_consumption.csv --preprocessed_out_dir=data/preprocessed --processed_out_dir=data/processed 
 
 # exploratory data analysis (frequency chart, personality scores chart, value counts table, numerical features barplot)
-results/eda/drug_frequency.png results/eda/personality_chart.png results/eda/numerical_bars.png results/eda/Age_valuecount.png results/eda/Gender_valuecount.png results/eda/Education_valuecount.png results/eda/Country_valuecount.png results/eda/Ethnicity_valuecount.png: src/drug_consumption_eda.py data/processed/train.csv
-	python src/drug_consumption_eda.py --train=data/processed/train.csv --out_dir=results/eda
+# results/eda/drug_frequency.png results/eda/personality_chart.png results/eda/numerical_bars.png results/eda/Age_valuecount.png results/eda/Gender_valuecount.png results/eda/Education_valuecount.png results/eda/Country_valuecount.png results/eda/Ethnicity_valuecount.png: src/drug_consumption_eda.py data/preprocessed/train.csv
+#	python src/drug_consumption_eda.py --train=data/preprocessed/train.csv --out_dir=results/eda
 
 # train model using SVC and assess on testing data
-results/feature_importances.png results/svc_dummy_score.csv results/test_results.csv: src/drug_consumption_prediction_model.py data/processed/train.csv data/processed/test.csv
+results/analysis/feature_importances.png results/analysis/svc_dummy_score.csv results/analysis/test_results.csv: src/drug_consumption_prediction_model.py data/processed/train.csv data/processed/test.csv
 	python src/drug_consumption_prediction_model.py --data_path=data/processed --result_path=results/analysis
 
 # render Rmarkdown report
