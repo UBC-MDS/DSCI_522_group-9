@@ -34,7 +34,7 @@ def main(in_path, preprocessed_out_dir, processed_out_dir):
     None
     Example
     --------
-    main("../data/raw/drug_consumption.data", "../data/preocessed", "../data/processed")
+    main("../data/raw/drug_consumption.data", "../data/preprocessed", "../data/processed")
     """
     # df = pd.read_table("../data/raw/drug_consumption.data", index_col=0, names=column_names, delimiter=',')
     df = pd.read_csv(in_path, index_col=0, names=mappings["column_headers"], delimiter=',')

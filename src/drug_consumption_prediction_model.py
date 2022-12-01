@@ -105,7 +105,7 @@ def main(data_path, result_path):
     dummy_cv_results = {}
     # Get the mean accuracy for each drug
     for drug in drug_columns: 
-        dummy_cv_results[drug] = pd.DataFrame(cross_validate(dc, X_train, y_train[drug], cv = 5,
+        dummy_cv_results[drug] = pd.DataFrame(cross_validate(dc, X_train, y_train[drug], cv = 2,
                                                 return_train_score = True, error_score="raise")).mean().round(4)
     
     # Save results in a DataFrame
@@ -130,7 +130,7 @@ def main(data_path, result_path):
     svc_best_score_by_drug = {}
     for drug in drug_columns: 
         random_search = RandomizedSearchCV(
-            svc_pipe, param_distributions = param_dist, n_jobs = -1, n_iter = 10, cv = 5, 
+            svc_pipe, param_distributions = param_dist, n_jobs = -1, n_iter = 10, cv = 2, 
             return_train_score = True, random_state = 522
         )
         random_search.fit(X_train, y_train[drug])
