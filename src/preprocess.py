@@ -16,7 +16,7 @@ from sklearn.model_selection import train_test_split
 import json
 
 #The following JSON file contains all the mappings required for data-cleaning 
-mappings = json.load(open("data_mapping.json", "r"))
+mappings = json.load(open("src/data_mapping.json", "r"))
 
 def main(in_path, preprocessed_out_dir, processed_out_dir):
     """
@@ -34,10 +34,10 @@ def main(in_path, preprocessed_out_dir, processed_out_dir):
     None
     Example
     --------
-    main("../data/raw/drug_consumption.data", "../data/preocessed", "../data/processed")
+    main("../data/raw/drug_consumption.data", "../data/preprocessed", "../data/processed")
     """
     # df = pd.read_table("../data/raw/drug_consumption.data", index_col=0, names=column_names, delimiter=',')
-    df = pd.read_table(in_path, index_col=0, names=mappings["column_headers"], delimiter=',')
+    df = pd.read_csv(in_path, index_col=0, names=mappings["column_headers"], delimiter=',')
 
     for key, values in mappings["categories"].items():
         #The float values are keys and are henced saved as string values in the JSON object
@@ -51,13 +51,13 @@ def main(in_path, preprocessed_out_dir, processed_out_dir):
     try:
         train_df.to_csv(os.path.join(preprocessed_out_dir, "train.csv"), index=False)
     except:
-        os.makedirs(os.path.dirname(preprocessed_out_dir))
+        os.makedirs(preprocessed_out_dir)
         train_df.to_csv(os.path.join(preprocessed_out_dir, "train.csv"), index=False)
 
     try:
         test_df.to_csv(os.path.join(preprocessed_out_dir, "test.csv"), index=False)
     except:
-        os.makedirs(os.path.dirname(preprocessed_out_dir))
+        os.makedirs(preprocessed_out_dir)
         test_df.to_csv(os.path.join(preprocessed_out_dir, "test.csv"), index=False)
     
     # Drop drugs columns that will not be used for analysis
@@ -72,13 +72,13 @@ def main(in_path, preprocessed_out_dir, processed_out_dir):
     try:
         train_df.to_csv(os.path.join(processed_out_dir, "train.csv"), index=False)
     except:
-        os.makedirs(os.path.dirname(processed_out_dir))
+        os.makedirs(processed_out_dir)
         train_df.to_csv(os.path.join(processed_out_dir, "train.csv"), index=False)
 
     try:
         test_df.to_csv(os.path.join(processed_out_dir, "test.csv"), index=False)
     except:
-        os.makedirs(os.path.dirname(processed_out_dir))
+        os.makedirs(processed_out_dir)
         test_df.to_csv(os.path.join(processed_out_dir, "test.csv"), index=False)
 
 if __name__ == "__main__":

@@ -2,6 +2,9 @@
 Saves the plots as png files and the tables as csv files.
 
 Usage: src/drug_consumption_eda.py --train=<train> --out_dir=<out_dir>
+
+Example: python src/drug_consumption_eda.py --train=data/preprocessed/train.csv --out_dir=results/eda
+
 Options:
 --train=<train>     Path (including filename) to training data (which needs to be saved as a CSV)
 --out_dir=<out_dir> Path to directory where the plots should be saved
@@ -13,10 +16,17 @@ from sklearn.model_selection import train_test_split
 from docopt import docopt
 import pandas as pd
 import os
+import warnings
 
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def main(train, out_dir):
     train_df = pd.read_csv(train)
+    
+    # Making the output folder if it does not exist
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+    
     # Making frequency of drug consumption chart
     
     feature_columns = [ 'Age', 'Gender', 'Education', 'Country', 'Ethnicity', 'Neuroticism',
