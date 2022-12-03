@@ -39,6 +39,14 @@ The SVM RBF Model analysis can be replicated using the following script located 
 The arguments for this script should be:
 --data_path="../data/preprocessed/"
 --result_path=""../results/"
+
+## Makefile
+To reset the repository to the initial state, with no intermediate or results files, run the following command  in the terminal from the root directory of this project:
+> make clean
+
+To replicate all of the analysis, run the following command in the terminal from the root directory of this project:
+> make all
+
 ## Dependencies
 - Python 3.10.6 and Python packages:
     - docopt-ng = 0.8.1
