@@ -31,7 +31,7 @@ def main(in_path, preprocessed_out_dir, processed_out_dir):
         df[key] = df.replace({key:values})[key]
 
     # df.to_csv("../data/preprocessed/drug_consumption.csv", index=False)
-    train_df, test_df = train_test_split(df, train_size=0.8, shuffle=False, random_state=522)
+    train_df, test_df = train_test_split(df, train_size=0.8, random_state=522)
     
     train_df.to_csv(os.path.join(preprocessed_out_dir, "train.csv"), index=False)
     test_df.to_csv(os.path.join(preprocessed_out_dir, "test.csv"), index=False)
