@@ -1,5 +1,9 @@
-"""This script downloads data given a URL and local file path.
+"""This script downloads data into a csv file given a URL and local file path.
+
 Usage: download_data.py --url=<url> --file_path=<file_path>
+
+Example: python src/download_data.py --url=https://archive.ics.uci.edu/ml/machine-learning-databases/00373/drug_consumption.data --file_path=data/raw
+
 Options:
 --url=<url>                 Takes in the url (this is a required option)
 --file_path=<file_path>     Takes in the local file path (this is a required option)
