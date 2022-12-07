@@ -14,6 +14,8 @@ For this model will attempt to predict the classification using SVM RBF classifi
 
 The dataset for this project is created by Elaine Fehrman, Vincent Egan, Evgeny Mirkes. It contains reponses from 1885 people about their usage of 18 different drugs, their personality measurements and other characteristics.
 
+## Report 
+Access the project report page [here](https://ubc-mds.github.io/drug_consumption_prediction/doc/drug_consumption_prediction_report.html)
 ## Usage
 ### With Docker
 To replicate analysis:
