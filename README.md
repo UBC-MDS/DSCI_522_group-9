@@ -7,7 +7,7 @@
 - Ritisha Sharma
 
 ## About
-***
+
 The objective of this project is to predict the level of consumption of a selection of drugs given their personality measurements, NEO-FFI-R (neuroticism, extraversion, openness to experience, agreeableness, and conscientiousness), BIS-11 (impulsivity), and ImpSS (sensation seeking), and personal characteristics (level of education, age, gender, country of residence, ethnicity). 
 
 For this model will attempt to predict the classification using SVM RBF classification model . One EDA would be comparing the distribution of personality measurements based on the reported use of a certain drug. 
@@ -15,7 +15,6 @@ For this model will attempt to predict the classification using SVM RBF classifi
 The dataset for this project is created by Elaine Fehrman, Vincent Egan, Evgeny Mirkes. It contains reponses from 1885 people about their usage of 18 different drugs, their personality measurements and other characteristics.
 
 ## Usage
-***
 ### Downloading Data
 In order to use run the anlysis, you can download the data using the script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/download_data/src/download_data.py)). The dataset is located at the following URL: https://archive.ics.uci.edu/ml/machine-learning-databases/00373/drug_consumption.data. This data should be stored in the following file path `data/raw/`. The arguments being:
 
@@ -72,7 +71,6 @@ make all
 ```
 
 ## Dependencies
-***
 - Python 3.10.6 and Python packages:
     - docopt-ng = 0.8.1
     - altair 4.2.0
