@@ -13,11 +13,26 @@ from docopt import docopt
 import pandas as pd
 import os
 
-def main(opt):
-    data = pd.read_csv(opt["--url"], header=None)
-    filepath = os.path.join(opt["--file_path"] , "drug_consumption.csv")
+def main(url, file_path):
+    """
+    Downloads data from url into csv
+    Parameters
+    ----------
+    url : string
+        url from where data is read
+    file_path: string
+        path to which csv file is saved
+    Returns
+    -------
+    None
+    Example
+    --------
+    main("https://archive.ics.uci.edu/ml/machine-learning-databases/00373/drug_consumption.data", "data/raw")
+    """
+    data = pd.read_csv(url, header=None)
+    filepath = os.path.join(file_path , "drug_consumption.csv")
     data.to_csv(filepath, index = False)
 
 if __name__ == '__main__':
     arguments = docopt(__doc__)
-    main(arguments)
+    main(arguments["--url"], arguments["--file_path"])
