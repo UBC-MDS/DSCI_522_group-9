@@ -32,10 +32,10 @@ def main(url, file_path):
     data = pd.read_csv(url, header=None)
     # Save results to result path
     try:
-        data.to_csv(os.path.join(file_path , "drug_consumption.csv"), index = False)
+        data.to_csv(os.path.join(file_path , "drug_consumption.csv"), index = False, header = None)
     except:
         os.makedirs(file_path)
-        data.to_csv(os.path.join(file_path , "drug_consumption.csv"), index = False)
+        data.to_csv(os.path.join(file_path , "drug_consumption.csv"), index = False, header = None)
 
 if __name__ == '__main__':
     arguments = docopt(__doc__)
