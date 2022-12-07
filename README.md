@@ -15,38 +15,6 @@ For this model will attempt to predict the classification using SVM RBF classifi
 The dataset for this project is created by Elaine Fehrman, Vincent Egan, Evgeny Mirkes. It contains reponses from 1885 people about their usage of 18 different drugs, their personality measurements and other characteristics.
 
 ## Usage
-### Downloading Data
-In order to use run the analysis, you can download the data using the script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/download_data/src/download_data.py)). The dataset is located at the following URL: https://archive.ics.uci.edu/ml/machine-learning-databases/00373/drug_consumption.data. This data should be stored in the following file path `data/raw/`. The arguments being:
-
- `--url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00373/drug_consumption.data" `
-
- `-- file_path= "data/raw/"`
-
-### Preprossesing
-The raw data requires some cleaning and can be replicated using the following script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/main/src/preprocess.py)). In order run this document, install the dependencies below.
-The arguments for this script should be:
-
-`--input_file="../data/raw/drug_consumption.data"`
-
-`--preproccessed_out_dir="./data/preprocessed"`
-
-`--processed_out_dir="../data/processed"`
-### EDA
-The exploritory data analysis can be replicated using the following script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/main/src/drug_consumption_eda.py)). In order run this anlysis, install the dependencies below.
-The arguments for this script should be:
-
-`--train="../data/preprocessed/train.csv"`
-
-`--out_dir="../results/eda/"`
-
-### Model
-The SVM RBF Model analysis can be replicated using the following script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/main/src/drug_consumption_prediction_model.py)). In order run this anlysis, install the dependencies below.
-The arguments for this script should be:
-
-`--data_path="../data/preprocessed/"`
-
-`--result_path=""../results/"`
-
 ### With Docker
 To replicate analysis:
 1. Install [Docker](https://www.docker.com/get-started/)
