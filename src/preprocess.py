@@ -1,8 +1,13 @@
 # author: Jenit Jain, Shaun Hutchinson, Ritisha Sharma
 # date: 2022-11-23
 
-"""
+""" The raw data from input_file_path is preprocessed (replace category values with more suitable ones) and saved to preprocessed directory.
+The preprocessed file is processed (drop unnecessary columns and clean strings) and saved into processed directory.
+
 Usage: preprocess.py --input_file_path=<input_file_path> --preprocessed_out_dir=<preprocessed_out_dir> --processed_out_dir=<processed_out_dir>
+
+Example: python src/preprocess.py --input_file_path=data/raw/drug_consumption.csv --preprocessed_out_dir=data/raw/preprocessed --processed_out_dir=data/raw/processed
+
 Options:
 --input_file_path=<input_file_path>                 Takes the input file path for the original file (this is a required positional argument)
 --preprocessed_out_dir=<preprocessed_out_dir>       Takes a directory path to dump the preprocessed data (this is a required positional argument)
