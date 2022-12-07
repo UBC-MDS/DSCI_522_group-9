@@ -16,13 +16,13 @@ The dataset for this project is created by Elaine Fehrman, Vincent Egan, Evgeny 
 
 ## Usage
 ### Downloading Data
-In order to use run the anlysis, you can download the data using the script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/download_data/src/download_data.py)). The dataset is located at the following URL: https://archive.ics.uci.edu/ml/machine-learning-databases/00373/drug_consumption.data. This data should be stored in the following file path `data/raw/`. The arguments being:
+In order to use run the analysis, you can download the data using the script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/download_data/src/download_data.py)). The dataset is located at the following URL: https://archive.ics.uci.edu/ml/machine-learning-databases/00373/drug_consumption.data. This data should be stored in the following file path `data/raw/`. The arguments being:
 
  `--url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00373/drug_consumption.data" `
 
  `-- file_path= "data/raw/"`
 
-## Preprossesing
+### Preprossesing
 The raw data requires some cleaning and can be replicated using the following script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/main/src/preprocess.py)). In order run this document, install the dependencies below.
 The arguments for this script should be:
 
@@ -31,7 +31,7 @@ The arguments for this script should be:
 `--preproccessed_out_dir="./data/preprocessed"`
 
 `--processed_out_dir="../data/processed"`
-## EDA
+### EDA
 The exploritory data analysis can be replicated using the following script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/main/src/drug_consumption_eda.py)). In order run this anlysis, install the dependencies below.
 The arguments for this script should be:
 
@@ -39,7 +39,7 @@ The arguments for this script should be:
 
 `--out_dir="../results/eda/"`
 
-## Model
+### Model
 The SVM RBF Model analysis can be replicated using the following script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/main/src/drug_consumption_prediction_model.py)). In order run this anlysis, install the dependencies below.
 The arguments for this script should be:
 
@@ -47,7 +47,7 @@ The arguments for this script should be:
 
 `--result_path=""../results/"`
 
-## With Docker
+### With Docker
 To replicate analysis:
 1. Install [Docker](https://www.docker.com/get-started/)
 2. Clone this GitHub repository
@@ -59,7 +59,7 @@ To reset the repository to the initial state, with no intermediate or results fi
 ```
 docker run --rm -v ...
 ```
-## Without Docker - Makefile
+### Without Docker - Makefile
 To reset the repository to the initial state, with no intermediate or results files, run the following command  in the terminal from the root directory of this project:
 ```
 make clean
