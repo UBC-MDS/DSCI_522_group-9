@@ -3,7 +3,11 @@
 
 """This script takes in training and testing set of drug consumption data set, 
 fits an SVC model on the training set and evaluates on the testing set.
+
 Usage: drug_consumption_prediction_model.py --data_path=<data_path> --result_path=<result_path>
+
+Example: python src/drug_consumption_prediction_model.py --data_path=data/processed --result_path=results/analysis
+
 Options:
 --data_path=<data_path>         Takes in the path to the data (this is a required option)
 --result_path=<result_path>     Takes in the file path to save the resulting figures/tables (this is a required option)
