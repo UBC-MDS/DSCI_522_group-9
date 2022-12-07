@@ -30,8 +30,12 @@ def main(url, file_path):
     main("https://archive.ics.uci.edu/ml/machine-learning-databases/00373/drug_consumption.data", "data/raw")
     """
     data = pd.read_csv(url, header=None)
-    filepath = os.path.join(file_path , "drug_consumption.csv")
-    data.to_csv(filepath, index = False)
+    # Save results to result path
+    try:
+        data.to_csv(os.path.join(file_path , "drug_consumption.csv"), index = False)
+    except:
+        os.makedirs(file_path)
+        data.to_csv(os.path.join(file_path , "drug_consumption.csv"), index = False)
 
 if __name__ == '__main__':
     arguments = docopt(__doc__)
