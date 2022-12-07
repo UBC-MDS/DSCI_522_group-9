@@ -1,4 +1,8 @@
-"""This script takes in training and testing set, fits an SVC model on the training set and evaluates on the testing set.
+# author: Jenit Jain, Shaun Hutchinson, Ritisha Sharma
+# 2021-11-26
+
+"""This script takes in training and testing set of drug consumption data set, 
+fits an SVC model on the training set and evaluates on the testing set.
 Usage: drug_consumption_prediction_model.py --data_path=<data_path> --result_path=<result_path>
 Options:
 --data_path=<data_path>         Takes in the path to the data (this is a required option)
@@ -15,13 +19,31 @@ from sklearn.compose import make_column_transformer
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder, OneHotEncoder
 from sklearn.model_selection import RandomizedSearchCV
-from sklearn.model_selection import cross_val_score, cross_val_predict, cross_validate
+from sklearn.model_selection import cross_validate
 
 from sklearn.dummy import DummyClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
 def main(data_path, result_path):
+    """
+    Fits training data to SVC model and optimizes hyperparameters and evaluates on the testing set
+
+    Parameters
+    ----------
+    data_path : string
+        path from where data is read
+    result_path: string
+        path to which results are stored
+
+    Returns
+    -------
+    None
+
+    Example
+    --------
+    main("../data/processed/", "../results")
+    """
     # Get data from the given path
     train_path = os.path.join(data_path, "train.csv")
     test_path = os.path.join(data_path, "test.csv")
@@ -76,15 +98,17 @@ def main(data_path, result_path):
         remainder = "passthrough"
     )
     
+    ## Get baseline scores ---------------------------------------------
     # DummyClassifier
     dc = DummyClassifier()
 
     dummy_cv_results = {}
     # Get the mean accuracy for each drug
     for drug in drug_columns: 
-        dummy_cv_results[drug] = pd.DataFrame(cross_validate(dc, X_train, y_train[drug], cv = 5,
-                                                return_train_score = True)).mean().round(4)
+        dummy_cv_results[drug] = pd.DataFrame(cross_validate(dc, X_train, y_train[drug], cv = 2,
+                                                return_train_score = True, error_score="raise")).mean().round(4)
     
+    # Save results in a DataFrame
     dummy_cv_results = pd.DataFrame(dummy_cv_results)
     dummy_cv_results = dummy_cv_results.drop(index = ["fit_time", "score_time"]).T
     dummy_cv_results = dummy_cv_results.reset_index()
@@ -100,30 +124,31 @@ def main(data_path, result_path):
             "svc__gamma": 10.0 ** np.arange(-4, 4),
              "svc__C": 10.0 ** np.arange(-4, 4)}
 
+    ## Fit SVC model ---------------------------------------------
     # Save the best model and score for each drug
     svc_best_estimator = {}
     svc_best_score_by_drug = {}
     for drug in drug_columns: 
         random_search = RandomizedSearchCV(
-            svc_pipe, param_distributions = param_dist, n_jobs = -1, n_iter = 10, cv = 5, 
+            svc_pipe, param_distributions = param_dist, n_jobs = -1, n_iter = 10, cv = 2, 
             return_train_score = True, random_state = 522
         )
         random_search.fit(X_train, y_train[drug])
         svc_best_estimator[drug] = random_search.best_estimator_
         svc_best_score_by_drug[drug] = [round(random_search.best_score_, 4)]
         
+    # Save best scores to dataframe
     score_by_drug = pd.DataFrame(svc_best_score_by_drug).T
     score_by_drug = score_by_drug.reset_index()
     score_by_drug = score_by_drug.rename(columns = {"index": "target_drug", 0: "svc_score"})
     score_by_drug["dummy_score"] = dummy_cv_results["test_score"]
     
     # Save results to result path
-    results_path = os.path.join(result_path, "svc_dummy_score.csv")
     try:
-        score_by_drug.to_csv(results_path, index = False)
+        score_by_drug.to_csv(os.path.join(result_path, "svc_dummy_score.csv"), index = False)
     except:
-        os.makedirs(os.path.dirname(results_path))
-        score_by_drug.to_csv(results_path, index = False)
+        os.makedirs(result_path)
+        score_by_drug.to_csv(os.path.join(result_path, "svc_dummy_score.csv"), index = False)
     
     # Look at feature importances with decision tree
     tree_clf_pipe =  make_pipeline(
@@ -143,12 +168,11 @@ def main(data_path, result_path):
     feature_importance_drug = feature_importance_drug.set_index("feature").style.background_gradient(cmap = "BuPu")
     
     # Save png to result path
-    fi_path = os.path.join(result_path, "feature_importances.png")
     try:
-        dfi.export(feature_importance_drug, fi_path)
+        dfi.export(feature_importance_drug, os.path.join(result_path, "feature_importances.png"))
     except:
-        os.makedirs(os.path.dirname(fi_path))
-        dfi.export(feature_importance_drug, fi_path)
+        os.makedirs(result_path)
+        dfi.export(feature_importance_drug, os.path.join(result_path, "feature_importances.png"))
     
     ## Evaluate on test set ---------------------------------------------
     test_scores = {}
@@ -161,12 +185,11 @@ def main(data_path, result_path):
     test_scores = test_scores.rename(columns = {"index": "target_drug", 0: "svc_score"})
     
     # Save results to result path
-    test_results_path = os.path.join(result_path, "test_results.csv")
     try:
-        test_scores.to_csv(test_results_path, index = False)
+        test_scores.to_csv(os.path.join(result_path, "test_results.csv"), index = False)
     except:
-        os.makedirs(os.path.dirname(test_results_path))
-        test_scores.to_csv(test_results_path, index = False)
+        os.makedirs(result_path)
+        test_scores.to_csv(os.path.join(result_path, "test_results.csv"), index = False)
     
 if __name__ == '__main__':
     opt = docopt(__doc__)
