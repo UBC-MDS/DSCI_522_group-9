@@ -1,5 +1,4 @@
 # Drug Consumption Prediction
-***
 
 **Contributors/Authors**
 
@@ -8,7 +7,7 @@
 - Ritisha Sharma
 
 ## About
-
+***
 The objective of this project is to predict the level of consumption of a selection of drugs given their personality measurements, NEO-FFI-R (neuroticism, extraversion, openness to experience, agreeableness, and conscientiousness), BIS-11 (impulsivity), and ImpSS (sensation seeking), and personal characteristics (level of education, age, gender, country of residence, ethnicity). 
 
 For this model will attempt to predict the classification using SVM RBF classification model . One EDA would be comparing the distribution of personality measurements based on the reported use of a certain drug. 
@@ -17,7 +16,7 @@ The dataset for this project is created by Elaine Fehrman, Vincent Egan, Evgeny 
 
 ## Usage
 ***
-## Downloading Data
+### Downloading Data
 In order to use run the anlysis, you can download the data using the script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/download_data/src/download_data.py)). The dataset is located at the following URL: https://archive.ics.uci.edu/ml/machine-learning-databases/00373/drug_consumption.data. This data should be stored in the following file path `data/raw/`. The arguments being:
  --url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00373/drug_consumption.data" 
  -- file_path= `"data/raw/"`
@@ -40,14 +39,31 @@ The arguments for this script should be:
 --data_path="../data/preprocessed/"
 --result_path=""../results/"
 
-## Makefile
+## With Docker
+To replicate analysis:
+1. Install [Docker](https://www.docker.com/get-started/)
+2. Clone this GitHub repository
+3. Enter following command from the root directory of this project into the terminal:
+```
+docker run --rm -v ...
+```
 To reset the repository to the initial state, with no intermediate or results files, run the following command  in the terminal from the root directory of this project:
-> make clean
+```
+docker run --rm -v ...
+```
+## Without Docker - Makefile
+To reset the repository to the initial state, with no intermediate or results files, run the following command  in the terminal from the root directory of this project:
+```
+make clean
+```
 
 To replicate all of the analysis, run the following command in the terminal from the root directory of this project:
-> make all
+```
+make all
+```
 
 ## Dependencies
+***
 - Python 3.10.6 and Python packages:
     - docopt-ng = 0.8.1
     - altair 4.2.0
@@ -73,5 +89,5 @@ This dataset is licensed under a Creative Commons Attribution 4.0 International 
 This allows for the sharing and adaptation of the datasets for any purpose, provided that the appropriate credit is given.
 
 # References
-***
+
 Fehrman,Elaine, Egan,Vincent & Mirkes,Evgeny. (2016). Drug consumption (quantified). UCI Machine Learning Repository.
