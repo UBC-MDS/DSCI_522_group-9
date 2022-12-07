@@ -1,3 +1,6 @@
+# author: Jenit Jain, Shaun Hutchinson, Ritisha Sharma
+# date: 2022-12-07
+
 """This script downloads data into a csv file given a URL and local file path.
 
 Usage: download_data.py --url=<url> --file_path=<file_path>
