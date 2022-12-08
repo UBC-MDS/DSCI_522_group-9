@@ -30,7 +30,7 @@ This report and the setup of the repository were inspired by Tiffany Timber's De
 
 ## Data
 
-The data that we used in the project is from a database that was collected by Elaine Fehrman between March 2011 and March 2012 which was sourced from the UCI Machine Learning Repository [@drug_consumption_quantified_373]. This information was gathered through an online survey tool from Survey Gizmo was employed to gather data with maximum anonymity, this being particularly relevant to canvassing respondents' views, given the sensitive nature of drug use. All participants were required to declare themselves at least 18 years of age prior to informed consent being given. Each row of the data set is the corresponds to the individual's responses. For our analysis, we have chosen to not include Ethnicity for ethical reasons.
+The data that we used in the project is from a database that was collected by Elaine Fehrman [@fehrman2015]between March 2011 and March 2012 which was sourced from the UCI Machine Learning Repository [@Dua:2019]. This information was gathered through an online survey tool from Survey Gizmo was employed to gather data with maximum anonymity, this being particularly relevant to canvassing respondents' views, given the sensitive nature of drug use. All participants were required to declare themselves at least 18 years of age prior to informed consent being given. Each row of the data set is the corresponds to the individual's responses. For our analysis, we have chosen to not include Ethnicity for ethical reasons.
 
 ## Exploratory Data Analyisis
 
@@ -47,7 +47,7 @@ The above plot shows the frequency of usage of different kinds of drugs. On the 
 
 Examining the the categorical variables, we see that most of the respondents are younger, with the largest age range being 18-24.
 
-```{r age valuecount table, show_col_types = FALSE}
+```{r age valuecount table, message = FALSE}
 age_count <- read_csv("../results/eda/Age_valuecount.csv")
 knitr::kable(age_count, caption = 'Table 1. Count of Responses by Age') |>
  kableExtra::kable_styling(full_width = FALSE)
