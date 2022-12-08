@@ -60,17 +60,18 @@ education_count <- read_csv("../results/eda/Education_valuecount.csv")
 knitr::kable(education_count, caption = 'Table 2. Count of Responses by Education Level') |>
  kableExtra::kable_styling(full_width = FALSE)
 ```
-
+<center>
 ![Spread of scores obatined from the NEO-FFI-R test](../results/eda/personality_chart.png)
+</center>
 
 The above plot shows the distribution of the NEO-FFI-R scores for all the participants involved in this experiment. We can notice that a few points are not included in the whiskers of the boxplot for some of the traits which can be explained by the small sample size. A lower score does not imply incorrect information or an outliers because it is not unusual for a person to have a very low/high score as the NEO-FFI-R test is very subjective to the person.
 
 We can see the means of all the traits lie in the Moderate range except for the Openness trait. One reason for this could be that if a person is participating in an experiment which includes the collection of highly personal data, they are probably very open-minded people and have a high level of openness to trying new things.
 
 Finally, looking into the ordinal columns impulsiveness and sensation seeking, we can see from plotting the histograms that the data points are clustered around the midpoint values as compared to the extreme values (high or low).
-
+<center>
 ![Ordinal Personality Traits](../results/eda/numerical_bars.png)
-
+</center>
 ## Analysis
 
 To build this model, we used the SVM RBF algorithm to predict whether the level of drug consumption (have never used a drug, used it a decade ago, used it in the last decade, used it in the last year, used it in the last month, used it in the last week, and used it in the last day) regarding a selection of drugs given their personality measurements. The categorical variables from the original data, were transformed using `OrdinalEncoder` if there was a natural order to the values and `OneHotEncoder` otherwise. The numerical features were scaled using `StandardScaler` since feature standardization is critical with the models used in the analysis.\
