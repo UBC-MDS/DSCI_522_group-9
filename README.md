@@ -23,11 +23,11 @@ To replicate analysis:
 2. Clone this GitHub repository
 3. Enter following command from the root directory of this project into the terminal:
 ```
-docker run --rm -v ...
+docker run --rm -v /$(pwd):/home/drug_consumption_prediction UBC-MDS/drug_consumption_prediction:1.0.0 make -C /home/drug_consumption_prediction all
 ```
 To reset the repository to the initial state, with no intermediate or results files, run the following command  in the terminal from the root directory of this project:
 ```
-docker run --rm -v ...
+docker run --rm -v /$(pwd):/home/drug_consumption_prediction UBC-MDS/drug_consumption_prediction:1.0.0 make -C /home/drug_consumption_prediction clean
 ```
 ### Without Docker - Makefile
 To reset the repository to the initial state, with no intermediate or results files, run the following command  in the terminal from the root directory of this project:
