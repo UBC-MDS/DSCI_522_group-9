@@ -18,7 +18,7 @@ results/eda/drug_frequency.png results/eda/personality_chart.png results/eda/num
 
 # train model using SVC and assess on testing data
 results/analysis/feature_importances.png results/analysis/svc_dummy_score.csv results/analysis/test_results.csv: src/drug_consumption_prediction_model.py data/processed/train.csv data/processed/test.csv
-	python src/drug_consumption_prediction_model.py --data_path=data/processed --result_path=results/analysis
+	python src/drug_consumption_prediction_model.py --data_path=data/preprocessed --result_path=results/analysis
 
 # render Rmarkdown report
 doc/drug_consumption_prediction_report.html: doc/drug_consumption_prediction_report.Rmd doc/drug_prediction_refs.bib
