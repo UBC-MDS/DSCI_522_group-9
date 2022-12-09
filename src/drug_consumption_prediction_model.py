@@ -260,40 +260,12 @@ def main(data_path, result_path):
             "svc__gamma": 10.0 ** np.arange(-4, 4),
              "svc__C": 10.0 ** np.arange(-4, 4)}
 
-    ## Get baseline scores ---------------------------------------------
-    # DummyClassifier
-    dc = DummyClassifier()
-
-    dummy_cv_results = {}
-    # Get the mean accuracy for each drug
-    for drug in drug_columns: 
-        dummy_cv_results[drug] = pd.DataFrame(cross_validate(dc, X_train, y_train[drug], cv = 2,
-                                                return_train_score = True)).mean().round(4)
-    
-    # Save results in a DataFrame
-    dummy_cv_results = pd.DataFrame(dummy_cv_results)
-    dummy_cv_results = dummy_cv_results.drop(index = ["fit_time", "score_time"]).T
-    dummy_cv_results = dummy_cv_results.reset_index()
-    dummy_cv_results = dummy_cv_results.rename(columns = {"index": "target_drug"})
-    
-    preprocessor = create_preprocessor()
-    
-    # SVC -- hyperparameter optimization
-    svc_pipe =  make_pipeline(
-        preprocessor, 
-        SVC()
-    )
-
-    param_dist = {"svc__class_weight": ["balanced", None],
-            "svc__gamma": 10.0 ** np.arange(-4, 4),
-             "svc__C": 10.0 ** np.arange(-4, 4)}
-
     svc_best_estimator, score_by_drug = train_model(svc_pipe, param_dist, X_train, y_train)
     score_by_drug = score_by_drug.rename(columns = {"index": "target_drug", 0: "svc_score"})
     score_by_drug["dummy_score"] = dummy_cv_results["test_score"]
     
     # Save results to result path
-    results_path = os.path.join(result_path, "analysis/svc_dummy_score.csv")
+    results_path = os.path.join(result_path, "svc_dummy_score.csv")
     try:
         score_by_drug.to_csv(results_path, index = False)
     except:
@@ -304,7 +276,7 @@ def main(data_path, result_path):
 
     
     # Save png to result path
-    fi_path = os.path.join(result_path, "analysis/feature_importances.png")
+    fi_path = os.path.join(result_path, "feature_importances.png")
     try:
         dfi.export(feature_importance_drug, fi_path)
     except:
@@ -322,7 +294,7 @@ def main(data_path, result_path):
     test_scores = test_scores.rename(columns = {"index": "target_drug", 0: "svc_score"})
     
     # Save results to result path
-    test_results_path = os.path.join(result_path, "analysis/test_results.csv")
+    test_results_path = os.path.join(result_path, "test_results.csv")
     try:
         test_scores.to_csv(test_results_path, index = False)
     except:

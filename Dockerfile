@@ -21,21 +21,22 @@ RUN apt-get install wget r-base r-base-dev -y
 RUN apt-get install -y \
 		python3-pip \
 		python3-dev 
-
+ 
+RUN export PATH=~/anaconda3/bin:$PATH
 # install conda dependencies
 RUN conda config --add channels conda-forge
-RUN conda install -y pip \
-        altair=4.2.0 \
-        pandas=1.4.3 \
-        numpy=1.23.3 \
-        dataframe_image = 0.1.1 \
+RUN conda install -c conda-forge -y pip \
+        altair==4.2.0 \
+        pandas==1.4.3 \
+        numpy==1.23.3 \
+        dataframe_image==0.1.1 \
         ipykernel \
         ipywidgets \
-        ipython>=7.15 \
+        'ipython>=7.15' \
         vega_datasets \
         altair_saver \
-        selenium<4.3.0 \
-        scikit-learn==1.1.3
+        'selenium<4.3.0' \
+	scikit-learn
 
 # install pip dependencies
 RUN pip install --upgrade pip \
