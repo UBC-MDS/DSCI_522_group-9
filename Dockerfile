@@ -4,15 +4,15 @@ FROM continuumio/miniconda3
 RUN apt-get update --fix-missing \
 	&& apt-get install -y \
 		ca-certificates \
-    	libglib2.0-0 \
+		libglib2.0-0 \
 	 	libxext6 \
 	   	libsm6  \
 	   	libxrender1 \
 		libxml2-dev \
-        gcc \
-        make \
-        pandoc \
-        pandoc-citeproc
+		gcc \
+		make \
+		pandoc \
+		pandoc-citeproc
 
 # Install base R and devtools
 RUN apt-get install wget r-base r-base-dev -y 
@@ -21,6 +21,7 @@ RUN apt-get install wget r-base r-base-dev -y
 RUN apt-get install -y \
 		python3-pip \
 		python3-dev 
+RUN apt-get install -y chromium-driver
  
 RUN export PATH=~/anaconda3/bin:$PATH
 # install conda dependencies
