@@ -22,7 +22,7 @@ RUN apt-get install -y \
 		python3-pip \
 		python3-dev 
 RUN apt-get install -y chromium-driver
- 
+  
 RUN export PATH=~/anaconda3/bin:$PATH
 # install conda dependencies
 RUN conda config --add channels conda-forge
