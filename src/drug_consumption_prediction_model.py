@@ -29,6 +29,91 @@ from sklearn.dummy import DummyClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
+def create_preprocessor():
+    # Column Transformations
+    numerical_cols = ["Neuroticism", "Extraversion", "Openness",
+                "Agreeableness", "Conscientiousness"]
+    
+    categorical_cols = ["Gender", "Country"]
+
+    ordinal_cols = ["Age", "Education", "Impulsiveness", "SensationSeeking"]
+    
+    # Specify the order for encoding the ordinal columns
+    age_order = ["18-24", "25-34", "35-44", "45-54", "55-64", "65+"]
+    education_order = ["Left school before 16 years", "Left school at 16 years", 
+                   "Left school at 17 years", "Left school at 18 years", 
+                   "Some college or university, no certificate or degree", 
+                   "Professional certificate/ diploma", "University degree",
+                  "Masters degree", "Doctorate degree"]
+    impulsiveness_order = ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10"]
+    sensation_seeking_order = ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11"]
+
+    # For testing -- should be in preprocessing file
+    # drop_cols = ["Ethnicity", "Amphetamines", "Amyl", "Benzos",
+    #     "Crack", "Ecstacy", "Heroin", "Ketamine", "Legalh",
+    #      "LSD", "Meth", "Semer"]
+
+    # Make column transformer
+    preprocessor =  make_column_transformer(
+        (StandardScaler(), numerical_cols),
+        (OrdinalEncoder(categories = [age_order, education_order, 
+                                  impulsiveness_order, sensation_seeking_order]), ordinal_cols),
+        (OneHotEncoder(drop='if_binary', dtype=int, handle_unknown='ignore'), categorical_cols),
+        # ("drop", drop_cols),
+        remainder = "passthrough"
+    )
+
+    return preprocessor
+
+def train_model(model, param_dist, X, y):
+    drug_columns = ['Chocolate', 'Caffeine',  'Nicotine', 'Alcohol', 
+                  'Cannabis', 'Mushrooms','Cocaine', 'VSA']
+
+    ## Fit model ---------------------------------------------
+    # Save the best model and score for each drug
+    model_best_estimator = {}
+    model_best_score_by_drug = {}
+    for drug in drug_columns: 
+        random_search = RandomizedSearchCV(
+            model, param_distributions = param_dist, n_jobs = -1, n_iter = 10, cv = 2, 
+            return_train_score = True, random_state = 522
+        )
+        random_search.fit(X, y[drug])
+        model_best_estimator[drug] = random_search.best_estimator_
+        model_best_score_by_drug[drug] = [round(random_search.best_score_, 4)]
+        
+    # Save best scores to dataframe
+    score_by_drug = pd.DataFrame(model_best_score_by_drug).T
+    score_by_drug = score_by_drug.reset_index()
+    
+    return model_best_estimator, score_by_drug
+
+def get_dt_feature_importances(X_train, y_train):
+    preprocessor = create_preprocessor()
+
+    drug_columns = ['Chocolate', 'Caffeine',  'Nicotine', 'Alcohol', 
+                  'Cannabis', 'Mushrooms','Cocaine', 'VSA']
+
+    # Look at feature importances with decision tree
+    tree_clf_pipe =  make_pipeline(
+        preprocessor, 
+        DecisionTreeClassifier(random_state=522)
+    )
+
+    drug_feature_importances = {}
+    for drug in drug_columns: 
+        tree_clf_pipe.fit(X_train, y_train[drug])
+        drug_feature_importances[drug] = tree_clf_pipe.named_steps["decisiontreeclassifier"].feature_importances_.tolist()
+    
+    # Create the datafame to show feature importances
+    feature_importance_drug = pd.DataFrame(drug_feature_importances)
+    feature_importance_drug["feature"] = tree_clf_pipe[0].get_feature_names_out().tolist()
+    feature_importance_drug["feature"] = feature_importance_drug["feature"].str.split("__", expand = True)[1]
+    feature_importance_drug = feature_importance_drug.set_index("feature").style.background_gradient(cmap = "BuPu")
+
+    return feature_importance_drug
+
+
 def main(data_path, result_path):
     """
     Fits training data to SVC model and optimizes hyperparameters and evaluates on the testing set
@@ -69,39 +154,6 @@ def main(data_path, result_path):
     X_test = test_df.drop(columns = drug_columns)
     y_test = test_df[drug_columns]
     
-    # Column Transformations
-    numerical_cols = ["Neuroticism", "Extraversion", "Openness",
-                "Agreeableness", "Conscientiousness"]
-    
-    categorical_cols = ["Gender", "Country"]
-
-    ordinal_cols = ["Age", "Education", "Impulsiveness", "SensationSeeking"]
-    
-    # Specify the order for encoding the ordinal columns
-    age_order = ["18-24", "25-34", "35-44", "45-54", "55-64", "65+"]
-    education_order = ["Left school before 16 years", "Left school at 16 years", 
-                   "Left school at 17 years", "Left school at 18 years", 
-                   "Some college or university, no certificate or degree", 
-                   "Professional certificate/ diploma", "University degree",
-                  "Masters degree", "Doctorate degree"]
-    impulsiveness_order = ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10"]
-    sensation_seeking_order = ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11"]
-
-    # For testing -- should be in preprocessing file
-    # drop_cols = ["Ethnicity", "Amphetamines", "Amyl", "Benzos",
-    #     "Crack", "Ecstacy", "Heroin", "Ketamine", "Legalh",
-    #      "LSD", "Meth", "Semer"]
-
-    # Make column transformer
-    preprocessor =  make_column_transformer(
-        (StandardScaler(), numerical_cols),
-        (OrdinalEncoder(categories = [age_order, education_order, 
-                                  impulsiveness_order, sensation_seeking_order]), ordinal_cols),
-        (OneHotEncoder(drop='if_binary', dtype=int, handle_unknown='ignore'), categorical_cols),
-        # ("drop", drop_cols),
-        remainder = "passthrough"
-    )
-    
     ## Get baseline scores ---------------------------------------------
     # DummyClassifier
     dc = DummyClassifier()
@@ -110,13 +162,15 @@ def main(data_path, result_path):
     # Get the mean accuracy for each drug
     for drug in drug_columns: 
         dummy_cv_results[drug] = pd.DataFrame(cross_validate(dc, X_train, y_train[drug], cv = 2,
-                                                return_train_score = True, error_score="raise")).mean().round(4)
+                                                return_train_score = True)).mean().round(4)
     
     # Save results in a DataFrame
     dummy_cv_results = pd.DataFrame(dummy_cv_results)
     dummy_cv_results = dummy_cv_results.drop(index = ["fit_time", "score_time"]).T
     dummy_cv_results = dummy_cv_results.reset_index()
     dummy_cv_results = dummy_cv_results.rename(columns = {"index": "target_drug"})
+    
+    preprocessor = create_preprocessor()
     
     # SVC -- hyperparameter optimization
     svc_pipe =  make_pipeline(
@@ -128,55 +182,27 @@ def main(data_path, result_path):
             "svc__gamma": 10.0 ** np.arange(-4, 4),
              "svc__C": 10.0 ** np.arange(-4, 4)}
 
-    ## Fit SVC model ---------------------------------------------
-    # Save the best model and score for each drug
-    svc_best_estimator = {}
-    svc_best_score_by_drug = {}
-    for drug in drug_columns: 
-        random_search = RandomizedSearchCV(
-            svc_pipe, param_distributions = param_dist, n_jobs = -1, n_iter = 10, cv = 2, 
-            return_train_score = True, random_state = 522
-        )
-        random_search.fit(X_train, y_train[drug])
-        svc_best_estimator[drug] = random_search.best_estimator_
-        svc_best_score_by_drug[drug] = [round(random_search.best_score_, 4)]
-        
-    # Save best scores to dataframe
-    score_by_drug = pd.DataFrame(svc_best_score_by_drug).T
-    score_by_drug = score_by_drug.reset_index()
+    svc_best_estimator, score_by_drug = train_model(svc_pipe, param_dist, X_train, y_train)
     score_by_drug = score_by_drug.rename(columns = {"index": "target_drug", 0: "svc_score"})
     score_by_drug["dummy_score"] = dummy_cv_results["test_score"]
     
     # Save results to result path
+    results_path = os.path.join(result_path, "analysis/svc_dummy_score.csv")
     try:
-        score_by_drug.to_csv(os.path.join(result_path, "svc_dummy_score.csv"), index = False)
+        score_by_drug.to_csv(results_path, index = False)
     except:
-        os.makedirs(result_path)
-        score_by_drug.to_csv(os.path.join(result_path, "svc_dummy_score.csv"), index = False)
+        os.makedirs(os.path.dirname(results_path))
+        score_by_drug.to_csv(results_path, index = False)
     
-    # Look at feature importances with decision tree
-    tree_clf_pipe =  make_pipeline(
-        preprocessor, 
-        DecisionTreeClassifier(random_state=522)
-    )
-
-    drug_feature_importances = {}
-    for drug in drug_columns: 
-        tree_clf_pipe.fit(X_train, y_train[drug])
-        drug_feature_importances[drug] = tree_clf_pipe.named_steps["decisiontreeclassifier"].feature_importances_.tolist()
-    
-    # Create the datafame to show feature importances
-    feature_importance_drug = pd.DataFrame(drug_feature_importances)
-    feature_importance_drug["feature"] = tree_clf_pipe[0].get_feature_names_out().tolist()
-    feature_importance_drug["feature"] = feature_importance_drug["feature"].str.split("__", expand = True)[1]
-    feature_importance_drug = feature_importance_drug.set_index("feature").style.background_gradient(cmap = "BuPu")
+    feature_importance_drug = get_dt_feature_importances(X_train, y_train)
     
     # Save png to result path
+    fi_path = os.path.join(result_path, "analysis/feature_importances.png")
     try:
-        dfi.export(feature_importance_drug, os.path.join(result_path, "feature_importances.png"))
+        dfi.export(feature_importance_drug, fi_path)
     except:
-        os.makedirs(result_path)
-        dfi.export(feature_importance_drug, os.path.join(result_path, "feature_importances.png"))
+        os.makedirs(os.path.dirname(fi_path))
+        dfi.export(feature_importance_drug, fi_path)
     
     ## Evaluate on test set ---------------------------------------------
     test_scores = {}
@@ -189,11 +215,12 @@ def main(data_path, result_path):
     test_scores = test_scores.rename(columns = {"index": "target_drug", 0: "svc_score"})
     
     # Save results to result path
+    test_results_path = os.path.join(result_path, "analysis/test_results.csv")
     try:
-        test_scores.to_csv(os.path.join(result_path, "test_results.csv"), index = False)
+        test_scores.to_csv(test_results_path, index = False)
     except:
-        os.makedirs(result_path)
-        test_scores.to_csv(os.path.join(result_path, "test_results.csv"), index = False)
+        os.makedirs(os.path.dirname(test_results_path))
+        test_scores.to_csv(test_results_path, index = False)
     
 if __name__ == '__main__':
     opt = docopt(__doc__)
