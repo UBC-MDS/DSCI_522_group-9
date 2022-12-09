@@ -1,5 +1,4 @@
 # Drug Consumption Prediction
-***
 
 **Contributors/Authors**
 
@@ -15,37 +14,31 @@ For this model will attempt to predict the classification using SVM RBF classifi
 
 The dataset for this project is created by Elaine Fehrman, Vincent Egan, Evgeny Mirkes. It contains reponses from 1885 people about their usage of 18 different drugs, their personality measurements and other characteristics.
 
+## Report 
+Access the project report page [here](https://ubc-mds.github.io/drug_consumption_prediction/doc/drug_consumption_prediction_report.html)
 ## Usage
-***
-## Downloading Data
-In order to use run the anlysis, you can download the data using the script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/download_data/src/download_data.py)). The dataset is located at the following URL: https://archive.ics.uci.edu/ml/machine-learning-databases/00373/drug_consumption.data. This data should be stored in the following file path `data/raw/`. The arguments being:
- --url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00373/drug_consumption.data" 
- -- file_path= `"data/raw/"`
-
-## Preprossesing
-The raw data requires some cleaning and can be replicated using the following script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/main/src/preprocess.py)). In order run this document, install the dependencies below.
-The arguments for this script should be:
---input_file="../data/raw/drug_consumption.data"
---preproccessed_out_dir="./data/preprocessed"
---processed_out_dir="../data/processed"
-## EDA
-The exploritory data analysis can be replicated using the following script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/main/src/drug_consumption_eda.py)). In order run this anlysis, install the dependencies below.
-The arguments for this script should be:
---train="../data/preprocessed/train.csv"
---out_dir="../results/eda/"
-
-## Model
-The SVM RBF Model analysis can be replicated using the following script located ([here](https://github.com/UBC-MDS/drug_consumption_prediction/blob/main/src/drug_consumption_prediction_model.py)). In order run this anlysis, install the dependencies below.
-The arguments for this script should be:
---data_path="../data/preprocessed/"
---result_path=""../results/"
-
-## Makefile
+### With Docker
+To replicate analysis:
+1. Install [Docker](https://www.docker.com/get-started/)
+2. Clone this GitHub repository
+3. Enter following command from the root directory of this project into the terminal:
+```
+docker run --rm -v /$(pwd):/home/drug_consumption_prediction brabbit61/drug_consumption_prediction:v0.3.0 make -C /home/drug_consumption_prediction all
+```
 To reset the repository to the initial state, with no intermediate or results files, run the following command  in the terminal from the root directory of this project:
-> make clean
+```
+docker run --rm -v /$(pwd):/home/drug_consumption_prediction brabbit61/drug_consumption_prediction:v0.3.0 make -C /home/drug_consumption_prediction clean
+```
+### Without Docker - Makefile
+To reset the repository to the initial state, with no intermediate or results files, run the following command  in the terminal from the root directory of this project:
+```
+make clean
+```
 
 To replicate all of the analysis, run the following command in the terminal from the root directory of this project:
-> make all
+```
+make all
+```
 
 ## Dependencies
 - Python 3.10.6 and Python packages:
@@ -73,5 +66,5 @@ This dataset is licensed under a Creative Commons Attribution 4.0 International 
 This allows for the sharing and adaptation of the datasets for any purpose, provided that the appropriate credit is given.
 
 # References
-***
+
 Fehrman,Elaine, Egan,Vincent & Mirkes,Evgeny. (2016). Drug consumption (quantified). UCI Machine Learning Repository.
