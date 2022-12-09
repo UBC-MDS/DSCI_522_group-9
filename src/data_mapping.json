@@ -46,11 +46,11 @@
         "SensationSeeking"
     ],
     "categorical":[
-        "Gender",
-        "Country"
+        "Gender"
     ],
     "drop":[
         "Ethnicity",
+        "Country",
         "Amphetamines",
         "Amyl",
         "Benzos",
@@ -61,7 +61,8 @@
         "Legalh",
         "LSD",
         "Meth",
-        "Semer"
+        "Semer",
+        "VSA"
     ],
     "drugs":[
         "Alcohol",
@@ -70,8 +71,7 @@
         "Caffeine",
         "Cocaine",
         "Mushrooms",
-        "Nicotine",
-        "VSA"
+        "Nicotine"
     ],
     "categories":{
         "Age": {
