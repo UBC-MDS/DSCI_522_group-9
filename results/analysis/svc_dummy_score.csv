@@ -1,9 +1,8 @@
 target_drug,svc_score,dummy_score
-Chocolate,0.4357,0.4357
-Caffeine,0.7354,0.7354
-Nicotine,0.3859,0.3336
-Alcohol,0.3999,0.3999
-Cannabis,0.3707,0.248
-Mushrooms,0.5119,0.5119
-Cocaine,0.5252,0.5252
-VSA,0.7672,0.7672
+Alcohol,0.6736,0.6736
+Cannabis,0.6542,0.4744
+Chocolate,0.7928,0.7928
+Caffeine,0.8881,0.8881
+Cocaine,0.7781,0.7781
+Mushrooms,0.7768,0.7735
+Nicotine,0.5956,0.4344

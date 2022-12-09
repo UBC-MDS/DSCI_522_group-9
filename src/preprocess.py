@@ -12,85 +12,119 @@ Options:
 --input_file_path=<input_file_path>                 Takes the input file path for the original file (this is a required positional argument)
 --preprocessed_out_dir=<preprocessed_out_dir>       Takes a directory path to dump the preprocessed data (this is a required positional argument)
 --processed_out_dir=<processed_out_dir>             Takes a directory path to dump the processed and encoded data (this is a required positional argument)
+
 """
+
+# Example:
+# python src/preprocess.py --input_file_path=data/raw/drug_consumption.csv --preprocessed_out_dir=data/preprocessed --processed_out_dir=data/processed
+
 
 import os
 from docopt import docopt
 import pandas as pd
+from sklearn.compose import make_column_transformer
+from sklearn.preprocessing import (
+    StandardScaler,
+    OrdinalEncoder,
+    OneHotEncoder,
+    PolynomialFeatures
+)
 from sklearn.model_selection import train_test_split
+from sklearn.pipeline import make_pipeline
 import json
 
-#The following JSON file contains all the mappings required for data-cleaning 
-mappings = json.load(open("src/data_mapping.json", "r"))
 
 def main(in_path, preprocessed_out_dir, processed_out_dir):
-    """
-    Processes raw data into preprocessed and cleans to processed data
+    '''
+    Given the input dataset, it cleans it and saves a preprocessed version.
+    It then applies column transformations and stores the transformed train and test sets
+    
     Parameters
     ----------
-    in_path : string
-        path from where data is read
-    preprocessed_out_dir: string
-        path to the directory where preprocessed data is stored
-    processed_out_dir: string
-        path to the directory where processed data is stored
-    Returns
-    -------
-    None
-    Example
+    in_path : str
+        File location of the raw dataset
+    preprocessed_out_dir : str
+        File directory to store the cleaned dataset
+    processed_out_dir : str
+        File directory to store the transformed dataset
+    
+    Examples
     --------
-    main("../data/raw/drug_consumption.data", "../data/preprocessed", "../data/processed")
-    """
-    # df = pd.read_table("../data/raw/drug_consumption.data", index_col=0, names=column_names, delimiter=',')
-    df = pd.read_csv(in_path, index_col=0, names=mappings["column_headers"], delimiter=',')
+    >>> main(in_path, preprocessed_dir, processed_dir)
+    '''
+    #The following JSON file contains all the mappings required for data-cleaning 
+    mappings = json.load(open("src/data_mapping.json", "r"))
 
+    df = pd.read_table(in_path, index_col=0, names=mappings["column_headers"], delimiter=',')
+    
+    # We will drop overclaimers since, there answers might not truly be accurate
+    df = df.drop(df[df['Semer'] != 'CL0'].index)
+    
     for key, values in mappings["categories"].items():
         #The float values are keys and are henced saved as string values in the JSON object
         #Hence we are casting them back to float here
         values = {float(k):v for k,v in values.items()}
         df[key] = df.replace({key:values})[key]
 
-    # df.to_csv("../data/preprocessed/drug_consumption.csv", index=False)
-    train_df, test_df = train_test_split(df, train_size=0.8, shuffle=False, random_state=522)
-
-    try:
-        train_df.to_csv(os.path.join(preprocessed_out_dir, "train.csv"), index=False)
-    except:
-        os.makedirs(preprocessed_out_dir)
-        train_df.to_csv(os.path.join(preprocessed_out_dir, "train.csv"), index=False)
-
-    try:
-        test_df.to_csv(os.path.join(preprocessed_out_dir, "test.csv"), index=False)
-    except:
-        os.makedirs(preprocessed_out_dir)
-        test_df.to_csv(os.path.join(preprocessed_out_dir, "test.csv"), index=False)
+    train_df, test_df = train_test_split(df, train_size=0.8, random_state=522)
     
-    # Drop drugs columns that will not be used for analysis
-    train_df = train_df.drop(columns = mappings["drop"])
-    test_df = test_df.drop(columns = mappings["drop"])
-
-    # Clean up strings in categorical and ordinal columns
-    for col_name in mappings["categorical"] + mappings["ordinal"]:
-        train_df[col_name] = train_df[col_name].str.strip()
-        test_df[col_name] = test_df[col_name].str.strip()
-
-    try:
-        train_df.to_csv(os.path.join(processed_out_dir, "train.csv"), index=False)
-    except:
-        os.makedirs(processed_out_dir)
-        train_df.to_csv(os.path.join(processed_out_dir, "train.csv"), index=False)
-
-    try:
-        test_df.to_csv(os.path.join(processed_out_dir, "test.csv"), index=False)
-    except:
-        os.makedirs(processed_out_dir)
-        test_df.to_csv(os.path.join(processed_out_dir, "test.csv"), index=False)
+    train_df.to_csv(os.path.join(preprocessed_out_dir, "train.csv"), index=False)
+    test_df.to_csv(os.path.join(preprocessed_out_dir, "test.csv"), index=False)
+    
+    #Perform col transformation
+    preprocessor =  make_column_transformer(
+                        (make_pipeline(PolynomialFeatures(degree=3),
+                                       StandardScaler()), mappings['numerical']),
+                        (OrdinalEncoder(categories = [
+                            list(mappings['categories']['Age'].values()),
+                            list(mappings['categories']['Education'].values()),
+                            list(mappings['categories']['Impulsiveness'].values()),
+                            list(mappings['categories']['SensationSeeking'].values()),
+                        ]), mappings['ordinal']),
+                        (OneHotEncoder(drop='if_binary', dtype=int, handle_unknown='ignore'), mappings['categorical']),
+                        ("drop", mappings['drop'])
+                    )
+    preprocessor.fit(train_df)
+    
+    X_train_enc = pd.DataFrame(preprocessor.transform(train_df),
+                               columns=preprocessor.get_feature_names_out())
+    X_test_enc = pd.DataFrame(preprocessor.transform(test_df),
+                               columns=preprocessor.get_feature_names_out())
+    
+    y_train = train_df[mappings['drugs']]
+    y_test = test_df[mappings['drugs']]
+    y_train_trans = y_train.copy()
+    y_test_trans = y_test.copy()
+    for drug in mappings['drugs']:
+        y_train_trans.loc[:, drug] = y_train[drug].replace({ "CL0": "C0",                           
+                                "CL1": "C0",
+                                "CL2": "C0",
+                                "CL3": "C1",
+                                "CL4": "C1",
+                                "CL5": "C2",
+                                "CL6": "C2"})
+        y_test_trans.loc[:, drug] = y_test[drug].replace({  "CL0": "C0",
+                                "CL1": "C0",
+                                "CL2": "C0",
+                                "CL3": "C1",
+                                "CL4": "C1",
+                                "CL5": "C2",
+                                "CL6": "C2"})
+    
+    X_test_enc.index = y_test.index
+    X_train_enc.index = y_train.index
+    
+    train_transformed = pd.concat([X_train_enc, y_train_trans], axis=1, ignore_index=True)
+    test_transformed = pd.concat([X_test_enc, y_test_trans], axis=1, ignore_index=True)
+    
+    train_transformed.columns = list( preprocessor.get_feature_names_out()) + list(mappings['drugs'])
+    test_transformed.columns =  list(preprocessor.get_feature_names_out()) + list(mappings['drugs'])
+    
+    train_transformed.to_csv(os.path.join(processed_out_dir, "train.csv"), index=False)
+    test_transformed.to_csv(os.path.join(processed_out_dir, "test.csv"), index=False)
 
 if __name__ == "__main__":
     opt = docopt(__doc__)
     main(opt['--input_file_path'], 
          opt['--preprocessed_out_dir'], 
          opt['--processed_out_dir'])
-    
-    
-    

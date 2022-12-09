@@ -14,10 +14,16 @@ import pandas as pd
 import numpy as np
 import dataframe_image as dfi
 import os
+import json
 
 from sklearn.compose import make_column_transformer
 from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import StandardScaler, OrdinalEncoder, OneHotEncoder
+from sklearn.preprocessing import (
+    StandardScaler,
+    OrdinalEncoder,
+    OneHotEncoder,
+    PolynomialFeatures
+)
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.model_selection import cross_validate
 
@@ -54,41 +60,41 @@ def main(data_path, result_path):
     # For testing -- should be in preprocessing file
     # train_df["Education"] = train_df["Education"].str.strip()
     # test_df["Education"] = test_df["Education"].str.strip()
-
+    
+    # Read mappings
+    mappings = json.load(open("src/data_mapping.json", "r"))
     # Separate out target columns
-    drug_columns = ['Chocolate', 'Caffeine',  'Nicotine', 'Alcohol', 
-                  'Cannabis', 'Mushrooms','Cocaine', 'VSA']
+    drug_columns = mappings['drugs']
 
     # Separate X and y 
     X_train = train_df.drop(columns = drug_columns)
-    y_train = train_df[drug_columns]
+    # y_train = train_df[drug_columns]
     X_test = test_df.drop(columns = drug_columns)
-    y_test = test_df[drug_columns]
+    # y_test = test_df[drug_columns]
     
-    # Column Transformations
-    numerical_cols = ["Neuroticism", "Extraversion", "Openness",
-                "Agreeableness", "Conscientiousness"]
+    y_train = train_df[mappings['drugs']]
+    y_test = test_df[mappings['drugs']]
     
-    categorical_cols = ["Gender", "Country"]
-
-    ordinal_cols = ["Age", "Education", "Impulsiveness", "SensationSeeking"]
+    for drug in mappings['drugs']:
+        y_train[drug].replace({ "CL0": "C0",                           
+                                "CL1": "C0",
+                                "CL2": "C0",
+                                "CL3": "C1",
+                                "CL4": "C1",
+                                "CL5": "C2",
+                                "CL6": "C2"},
+                              inplace=True)
     
-    # Specify the order for encoding the ordinal columns
-    age_order = ["18-24", "25-34", "35-44", "45-54", "55-64", "65+"]
-    education_order = ["Left school before 16 years", "Left school at 16 years", 
-                   "Left school at 17 years", "Left school at 18 years", 
-                   "Some college or university, no certificate or degree", 
-                   "Professional certificate/ diploma", "University degree",
-                  "Masters degree", "Doctorate degree"]
-    impulsiveness_order = ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10"]
-    sensation_seeking_order = ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11"]
-
-    # For testing -- should be in preprocessing file
-    # drop_cols = ["Ethnicity", "Amphetamines", "Amyl", "Benzos",
-    #     "Crack", "Ecstacy", "Heroin", "Ketamine", "Legalh",
-    #      "LSD", "Meth", "Semer"]
-
-    # Make column transformer
+        y_test[drug].replace({  "CL0": "C0",
+                                "CL1": "C0",
+                                "CL2": "C0",
+                                "CL3": "C1",
+                                "CL4": "C1",
+                                "CL5": "C2",
+                                "CL6": "C2"},
+                             inplace=True)
+    
+    '''# Make column transformer
     preprocessor =  make_column_transformer(
         (StandardScaler(), numerical_cols),
         (OrdinalEncoder(categories = [age_order, education_order, 
@@ -96,8 +102,19 @@ def main(data_path, result_path):
         (OneHotEncoder(drop='if_binary', dtype=int, handle_unknown='ignore'), categorical_cols),
         # ("drop", drop_cols),
         remainder = "passthrough"
-    )
-    
+    )'''
+    preprocessor =  make_column_transformer(
+                        (make_pipeline(PolynomialFeatures(degree=3),
+                                       StandardScaler()), mappings['numerical']),
+                        (OrdinalEncoder(categories = [
+                            list(mappings['categories']['Age'].values()),
+                            list(mappings['categories']['Education'].values()),
+                            list(mappings['categories']['Impulsiveness'].values()),
+                            list(mappings['categories']['SensationSeeking'].values()),
+                        ]), mappings['ordinal']),
+                        (OneHotEncoder(drop='if_binary', dtype=int, handle_unknown='ignore'), mappings['categorical']),
+                        ("drop", mappings['drop'])
+                    )   
     ## Get baseline scores ---------------------------------------------
     # DummyClassifier
     dc = DummyClassifier()
@@ -151,8 +168,23 @@ def main(data_path, result_path):
         score_by_drug.to_csv(os.path.join(result_path, "svc_dummy_score.csv"), index = False)
     
     # Look at feature importances with decision tree
+    # Make column transformer
+    drop_columns = mappings['drop']
+    drop_columns.remove("Country")
+    tree_preprocessor =  make_column_transformer(
+        (StandardScaler(), mappings['numerical']),
+        (OrdinalEncoder(categories = [
+                            list(mappings['categories']['Age'].values()),
+                            list(mappings['categories']['Education'].values()),
+                            list(mappings['categories']['Impulsiveness'].values()),
+                            list(mappings['categories']['SensationSeeking'].values()),
+                        ]), mappings['ordinal']),
+        (OneHotEncoder(drop='if_binary', dtype=int, handle_unknown='ignore'), mappings['categorical'] + ['Country']),
+        ("drop", drop_columns)
+    )
+        
     tree_clf_pipe =  make_pipeline(
-        preprocessor, 
+        tree_preprocessor, 
         DecisionTreeClassifier(random_state=522)
     )
 
