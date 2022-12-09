@@ -59,4 +59,3 @@ RUN Rscript -e "install.packages('knitr')"
 RUN Rscript -e "install.packages('rmarkdown')"
 RUN Rscript -e "install.packages('kableExtra')"
 RUN Rscript -e "install.packages('tidyverse')"
-
