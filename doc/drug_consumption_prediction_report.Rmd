@@ -88,7 +88,7 @@ The results of the feature importance show that NEO-FFI-R personality scores wer
 The results of our model were not as promising as expected, many of the drug predictions do not perform any better than the `DummyClassifier`. The only predictions that performed better than the `DummyClassifier` were for Cannabis or Nicotine.
 
 ```{r}
-test_scores <- read_csv("../results/analysis/svc_dummy_Score.csv")
+test_scores <- read_csv("../results/analysis/svc_dummy_score.csv")
 knitr::kable(test_scores, caption = 'Table 4. Count of Responses by Education Level') |>
  kableExtra::kable_styling(full_width = FALSE)
 ```
