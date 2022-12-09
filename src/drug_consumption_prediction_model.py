@@ -109,8 +109,8 @@ def main(data_path, result_path):
     dummy_cv_results = {}
     # Get the mean accuracy for each drug
     for drug in drug_columns: 
-        dummy_cv_results[drug] = pd.DataFrame(cross_validate(dc, X_train, y_train[drug], cv = 5,
-                                                return_train_score = True)).mean().round(4)
+        dummy_cv_results[drug] = pd.DataFrame(cross_validate(dc, X_train, y_train[drug], cv = 2,
+                                                return_train_score = True, error_score="raise")).mean().round(4)
     
     # Save results in a DataFrame
     dummy_cv_results = pd.DataFrame(dummy_cv_results)
@@ -134,7 +134,7 @@ def main(data_path, result_path):
     svc_best_score_by_drug = {}
     for drug in drug_columns: 
         random_search = RandomizedSearchCV(
-            svc_pipe, param_distributions = param_dist, n_jobs = -1, n_iter = 10, cv = 5, 
+            svc_pipe, param_distributions = param_dist, n_jobs = -1, n_iter = 10, cv = 2, 
             return_train_score = True, random_state = 522
         )
         random_search.fit(X_train, y_train[drug])
@@ -148,12 +148,11 @@ def main(data_path, result_path):
     score_by_drug["dummy_score"] = dummy_cv_results["test_score"]
     
     # Save results to result path
-    results_path = os.path.join(result_path, "analysis/svc_dummy_score.csv")
     try:
-        score_by_drug.to_csv(results_path, index = False)
+        score_by_drug.to_csv(os.path.join(result_path, "svc_dummy_score.csv"), index = False)
     except:
-        os.makedirs(os.path.dirname(results_path))
-        score_by_drug.to_csv(results_path, index = False)
+        os.makedirs(result_path)
+        score_by_drug.to_csv(os.path.join(result_path, "svc_dummy_score.csv"), index = False)
     
     # Look at feature importances with decision tree
     tree_clf_pipe =  make_pipeline(
@@ -173,12 +172,11 @@ def main(data_path, result_path):
     feature_importance_drug = feature_importance_drug.set_index("feature").style.background_gradient(cmap = "BuPu")
     
     # Save png to result path
-    fi_path = os.path.join(result_path, "analysis/feature_importances.png")
     try:
-        dfi.export(feature_importance_drug, fi_path)
+        dfi.export(feature_importance_drug, os.path.join(result_path, "feature_importances.png"))
     except:
-        os.makedirs(os.path.dirname(fi_path))
-        dfi.export(feature_importance_drug, fi_path)
+        os.makedirs(result_path)
+        dfi.export(feature_importance_drug, os.path.join(result_path, "feature_importances.png"))
     
     ## Evaluate on test set ---------------------------------------------
     test_scores = {}
@@ -191,12 +189,11 @@ def main(data_path, result_path):
     test_scores = test_scores.rename(columns = {"index": "target_drug", 0: "svc_score"})
     
     # Save results to result path
-    test_results_path = os.path.join(result_path, "analysis/test_results.csv")
     try:
-        test_scores.to_csv(test_results_path, index = False)
+        test_scores.to_csv(os.path.join(result_path, "test_results.csv"), index = False)
     except:
-        os.makedirs(os.path.dirname(test_results_path))
-        test_scores.to_csv(test_results_path, index = False)
+        os.makedirs(result_path)
+        test_scores.to_csv(os.path.join(result_path, "test_results.csv"), index = False)
     
 if __name__ == '__main__':
     opt = docopt(__doc__)
