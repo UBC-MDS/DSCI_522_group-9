@@ -278,7 +278,7 @@ def main(data_path, result_path):
     # Save png to result path
     fi_path = os.path.join(result_path, "feature_importances.png")
     try:
-        dfi.export(feature_importance_drug, fi_path)
+        dfi.export(feature_importance_drug, fi_path, table_conversion='matplotlib')
     except:
         os.makedirs(os.path.dirname(fi_path))
         dfi.export(feature_importance_drug, fi_path)
