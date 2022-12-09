@@ -30,6 +30,22 @@ from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
 def create_preprocessor():
+    """
+    Created a preprocessor specific to this analysis and dataset
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    preprocessor : ColumnTransformer
+        Contains the transformers for each column-type
+
+    Example
+    --------
+    create_preprocessor()
+    """
     # Column Transformations
     numerical_cols = ["Neuroticism", "Extraversion", "Openness",
                 "Agreeableness", "Conscientiousness"]
@@ -66,6 +82,31 @@ def create_preprocessor():
     return preprocessor
 
 def train_model(model, param_dist, X, y):
+    """
+    Uses the model provided in the arguments with the parameter distribution to find best scores after optimization
+
+    Parameters
+    ----------
+    model : scikit model
+        The model to be fit and evaluated
+    param_dist : dictionary
+        The hyperparameter that model is optimized over
+    X : np.array
+        The training data without targets
+    y : np.array
+        The targets for training data
+
+    Returns
+    -------
+    model_best_estimator : scikit model
+        The best model found by RandomizedSearchCV
+    score_by_drug : pd.DataFrame
+        Contains the scores according to the drug
+
+    Example
+    --------
+    train_model(svc, param_dist, X_train, y_train)
+    """
     drug_columns = ['Chocolate', 'Caffeine',  'Nicotine', 'Alcohol', 
                   'Cannabis', 'Mushrooms','Cocaine', 'VSA']
 
@@ -89,6 +130,25 @@ def train_model(model, param_dist, X, y):
     return model_best_estimator, score_by_drug
 
 def get_dt_feature_importances(X_train, y_train):
+    """
+    Uses a Decision Tree on the training data to get feature importances
+
+    Parameters
+    ----------
+    X_train : np.array
+        The training data without targets
+    y_train : np.array
+        The targets for training data
+
+    Returns
+    -------
+    feature_importance_drug : pd.DataFrame
+        Contains the calculated feature importances
+
+    Example
+    --------
+    get_dt_feature_importances(X_train, y_train)
+    """
     preprocessor = create_preprocessor()
 
     drug_columns = ['Chocolate', 'Caffeine',  'Nicotine', 'Alcohol', 
@@ -109,6 +169,7 @@ def get_dt_feature_importances(X_train, y_train):
     feature_importance_drug = pd.DataFrame(drug_feature_importances)
     feature_importance_drug["feature"] = tree_clf_pipe[0].get_feature_names_out().tolist()
     feature_importance_drug["feature"] = feature_importance_drug["feature"].str.split("__", expand = True)[1]
+    # Add highlighting to distinguish between importances
     feature_importance_drug = feature_importance_drug.set_index("feature").style.background_gradient(cmap = "BuPu")
 
     return feature_importance_drug
