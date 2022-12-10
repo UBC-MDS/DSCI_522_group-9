@@ -39,7 +39,12 @@ To replicate all of the analysis, run the following command in the terminal from
 ```
 make all
 ```
+## Dependancy Diagram
 
+The dependancy diagram of Makefile of our project is below:
+![Dependancy Diagram](doc/flowchart.drawio.png)
+
+We have also created an addition graph using `makefile2graph` located [here](doc/Makefile.png).
 ## Dependencies
 - Python 3.10.6 and Python packages:
     - docopt-ng = 0.8.1
