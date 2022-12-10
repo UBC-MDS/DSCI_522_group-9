@@ -21,7 +21,7 @@ results/analysis/feature_importances.png results/analysis/svc_dummy_score.csv re
 	python src/drug_consumption_prediction_model.py --data_path=data/processed --result_path=results/analysis
 
 # render Rmarkdown report
-doc/drug_consumption_prediction_report.html: doc/drug_consumption_prediction_report.Rmd doc/drug_prediction_refs.bib
+doc/drug_consumption_prediction_report.html: doc/drug_consumption_prediction_report.Rmd doc/drug_prediction_refs.bib results/eda/drug_frequency.png results/eda/personality_chart.png results/eda/numerical_bars.png results/eda/Age_valuecount.png results/eda/Gender_valuecount.png results/eda/Education_valuecount.png results/eda/Country_valuecount.png results/eda/Ethnicity_valuecount.png  results/analysis/feature_importances.png results/analysis/svc_dummy_score.csv results/analysis/test_results.csv
 	Rscript -e "rmarkdown::render('doc/drug_consumption_prediction_report.Rmd', output_format = 'html_document')"
 
 clean: 
