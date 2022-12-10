@@ -2,7 +2,7 @@
 # author: Shaun Hutchinson, Jenit Jain, Ritisha Sharma
 # date: 2022-11-29
 
-all: results/eda/drug_frequency.png results/eda/personality_chart.png results/eda/numerical_bars.png results/eda/Age_valuecount.png results/eda/Gender_valuecount.png results/eda/Education_valuecount.png results/eda/Country_valuecount.png results/eda/Ethnicity_valuecount.png  results/analysis/feature_importances.png results/analysis/svc_dummy_score.csv results/analysis/test_results.csv doc/drug_consumption_prediction_report.html
+all: doc/drug_consumption_prediction_report.html
 
 # download and save data from url
 data/raw/drug_consumption.csv: src/download_data.py
