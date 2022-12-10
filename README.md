@@ -42,7 +42,7 @@ make all
 ## Dependancy Diagram
 
 The dependancy diagram of Makefile of our project is below:
-![Dependancy Diagram](doc/flowchart.drawio.png)
+![Dependancy Diagram](doc/Makefile_flowchart.png)
 
 We have also created an addition graph using `makefile2graph` located [here](doc/Makefile.png).
 ## Dependencies
